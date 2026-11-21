@@ -155,7 +155,7 @@
     $('capa').classList.add('oculto'); $('app').classList.remove('oculto');
     $('quem-nome').textContent = r.pessoa.nome + (r.pessoa.mat ? ' · ' + r.pessoa.mat : '');
     $('quem-perfil').textContent = r.gestao ? 'Gestão Geral' : (r.perfis.join(', ') || 'Equipe');
-    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + '<button data-v="avisos">Mural de avisos</button>';
+    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + '<button data-v="avisos">Mural de avisos</button>';
     CATS.forEach(function (c) { m += '<button data-v="cat:' + esc(c) + '">' + esc(c) + '</button>';
       if (c === 'Setores transversais') r.areas.forEach(function (a) { var mod = modulo(a); if (mod && a !== 'health-army' && a !== 'sos-armys' && a !== 'jus-voz') m += '<button class="sub" data-v="area:' + a + '">' + esc(mod.nome) + '</button>'; });
       if (c === 'Acompanhamento' && r.painel) m += '<button class="sub" data-v="painel">Painel da equipe</button>';
@@ -182,6 +182,7 @@
     if (v === 'area:sos-armys') return telaSOS();
     if (v === 'area:jus-voz') return telaVoz();
     if (v === 'area:trilha') return onbMinhaTela();
+    if (v === 'area:cobrar-trilha') return onbCobrancaTela();
     if (v.indexOf('area:') === 0) return telaArea(v.slice(5));
     if (v === 'painel') return telaPainel();
     if (v === 'planejamento') { PL.aberto = ''; return telaPlanejamento(); }
@@ -3653,6 +3654,69 @@
           alert('Nota ' + r.nota + '%. A nota mínima é ' + OM.d.notaMin + '%. Releia o conteúdo com calma: você pode refazer ' + r.restam + ' vez.'); onbMinhaTela();
         });
       };
+    });
+  }
+</script>
+<script>
+  /* ===== Cobrar a conclusão da trilha — versão 1.0 (21/11/2026) ===== */
+  var OC = { d: null };
+  function onbCobrancaTela() {
+    $('conteudo').innerHTML = '<p class="carregando">Carregando as trilhas em aberto...</p>';
+    chamar('onbCobrancaDados', [S.email, S.token], function (r) {
+      if (!r.ok) { $('conteudo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      OC.d = r; onbCobrancaDesenhar();
+    });
+  }
+  function onbCobrancaDesenhar() {
+    var d = OC.d;
+    var h = '<h1>Cobrar trilhas</h1><p class="sub-tit">Pessoas com a trilha de integração em aberto · Você cobra: ' + esc(d.alcance.join(', ')) + '</p><div id="oc-msg"></div>' +
+      '<div class="card"><p>A cobrança vai por e-mail e avisa que <b>concluir a trilha é obrigatório para continuar ativa(o) na equipe</b>, com o prazo e o caminho no MAP OS. Cada envio fica anotado na ficha da pessoa.</p>' +
+      (d.lista.length ? '<button class="btn" id="oc-todos">Cobrar todas as pessoas da lista (' + d.lista.length + ')</button>' : '') + '</div>';
+    h += d.lista.length ? '<div style="overflow-x:auto"><table><thead><tr><th>Nome</th><th>Projeto / frente</th><th>Etapas aprovadas</th><th>Prazo</th><th>Cobranças</th><th></th></tr></thead><tbody>' +
+      d.lista.map(function (p) {
+        return '<tr><td>' + esc(p.nome) + (p.funcao ? '<br><small>' + esc(p.funcao) + '</small>' : '') + '</td><td>' + esc(p.projeto || '-') + (p.frente ? '<br><small>' + esc(p.frente) + '</small>' : '') + '</td>' +
+          '<td>' + p.aprovadas + ' de ' + p.total + '</td><td>' + esc(p.prazo || '-') + '</td><td>' + (p.cobrancas ? p.cobrancas + ' (última ' + esc(p.ultima) + ')' : 'Nenhuma') + '</td>' +
+          '<td><button class="btn pq claro" data-oc="' + esc(p.id) + '">Cobrar</button></td></tr>';
+      }).join('') + '</tbody></table></div>' : '<div class="msg ok">Ninguém com a trilha em aberto no seu alcance.</div>';
+    if (d.gestao) {
+      h += '<div class="card"><h3>Quem pode cobrar (só a Gestão Geral muda)</h3><p style="font-size:13px">A Gestão Geral e o RH sempre podem cobrar todas as equipes. Inclua aqui coordenadoras, assistentes e outras pessoas. Em "Alcance", escreva a frente ou o projeto (ex.: Health Army, Purple Army). Deixe vazio para todas as equipes. A pessoa precisa ter acesso ao MAP OS.</p>' +
+        '<div id="oc-lista">' + (d.cobradores || []).map(onbCobLinha).join('') + '</div>' +
+        '<button class="btn pq claro" id="oc-mais">+ Pessoa</button> <button class="btn" id="oc-salvar">Salvar quem pode cobrar</button></div>';
+    }
+    $('conteudo').innerHTML = h;
+    var todos = $('oc-todos'); if (todos) todos.onclick = function () { if (confirm('Enviar a cobrança para as ' + d.lista.length + ' pessoas da lista?')) onbCobrancaEnviar([], todos); };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-oc]'), function (b) { b.onclick = function () { onbCobrancaEnviar([b.getAttribute('data-oc')], b); }; });
+    if (d.gestao) {
+      $('oc-mais').onclick = function () { var div = document.createElement('div'); div.innerHTML = onbCobLinha({}); $('oc-lista').appendChild(div.firstChild); onbCobLigar(); };
+      $('oc-salvar').onclick = onbCobSalvar; onbCobLigar();
+    }
+  }
+  function onbCobLinha(x) {
+    return '<div class="oc-pessoa" style="display:grid;grid-template-columns:2fr 1.5fr 1.5fr auto;gap:8px;align-items:end;margin-bottom:8px">' +
+      '<div><label>E-mail</label><input class="oc-em" value="' + esc(x.email || '') + '" placeholder="email@exemplo.com"></div>' +
+      '<div><label>Função</label><input class="oc-fn" value="' + esc(x.funcao || '') + '" placeholder="Coordenação, Assistente..."></div>' +
+      '<div><label>Alcance</label><input class="oc-es" value="' + esc(x.escopo || '') + '" placeholder="Vazio = todas as equipes"></div>' +
+      '<button class="btn pq claro oc-tirar" type="button">Tirar</button></div>';
+  }
+  function onbCobLigar() { Array.prototype.forEach.call(document.querySelectorAll('.oc-tirar'), function (b) { b.onclick = function () { b.parentNode.parentNode.removeChild(b.parentNode); }; }); }
+  function onbCobSalvar() {
+    var l = Array.prototype.map.call(document.querySelectorAll('.oc-pessoa'), function (p) {
+      return { email: p.querySelector('.oc-em').value, funcao: p.querySelector('.oc-fn').value, escopo: p.querySelector('.oc-es').value };
+    }).filter(function (x) { return x.email.trim(); });
+    var b = $('oc-salvar'); b.disabled = true;
+    chamar('onbCobradoresSalvar', [S.email, S.token, l], function (r) {
+      b.disabled = false;
+      aviso($('oc-msg'), r.ok ? 'ok' : 'erro', r.ok ? 'Salvo: ' + r.total + ' pessoa(s) podem cobrar as trilhas.' : r.erro);
+      $('oc-msg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+  function onbCobrancaEnviar(ids, b) {
+    b.disabled = true; var t = b.textContent; b.textContent = 'Enviando...';
+    chamar('onbCobrar', [S.email, S.token, ids], function (r) {
+      b.textContent = t; b.disabled = false;
+      aviso($('oc-msg'), r.ok ? 'ok' : 'erro', r.ok ? 'Cobrança enviada para ' + r.enviados + ' pessoa(s).' : r.erro);
+      if (r.ok) setTimeout(onbCobrancaTela, 1500);
+      else $('oc-msg').scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }
 </script>
