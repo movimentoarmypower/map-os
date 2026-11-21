@@ -3256,6 +3256,13 @@
       });
     }; });
   }
+  
+  function rhCtModelo(p, sel) {
+    var l = (RH.d && RH.d.modelos) || ['Voluntariado', 'Parceria Health Army', 'Cooperação Empreende Army'];
+    return '<div class="duas"><div><label>Documento *</label><select id="' + p + '-mod">' + rhOpc(l, sel || l[0]) + '</select>' +
+      '<p style="font-size:12px;color:var(--texto-suave)">Voluntariado e Empreende Army: a pessoa assina no Autentique e a Letícia assina depois pelo gov.br. Health Army: assinam a Mary e a pessoa no Autentique.</p></div><div>' +
+      rhTx(p + '-serv', 'Serviços (Health Army) ou plano de ação do Anexo I (Empreende Army)', '') + '<label>Data de término (Empreende Army)</label><input type="date" id="' + p + '-fim"></div></div>';
+  }
   function rhContratoForm(x) {
     var f = $('rc-form') || $('rt-form');
     x = x || {};
@@ -3265,7 +3272,7 @@
       rhIn('ct-nome', 'Nome completo *', x.nome) + rhIn('ct-email', 'E-mail *', x.email) + rhIn('ct-zap', 'WhatsApp', x.whatsapp) +
       '<label>Menor de 18 anos?</label><select id="ct-menor">' + rhOpc(['Não', 'Sim'], x.menor === 'Sim' ? 'Sim' : 'Não') + '</select></div><div>' +
       rhIn('ct-proj', 'Projeto / Co-Projeto *', String(x.destino || '').split(' · ')[1] || '') + rhIn('ct-func', 'Função (presta serviços como) *', vaga) +
-      rhTx('ct-ativ', 'Funções que vai executar', '') + rhIn('ct-obs', 'Observação interna', '') + '</div></div>' +
+      rhTx('ct-ativ', 'Funções que vai executar', '') + rhIn('ct-obs', 'Observação interna', '') + '</div></div>' + rhCtModelo('ct', 'Voluntariado') +
       '<div class="botoes"><button class="btn" id="ct-ok">Enviar o link para a pessoa</button><button class="btn claro" id="ct-x">Cancelar</button></div></div>';
     f.scrollIntoView({ behavior: 'smooth', block: 'start' });
     $('ct-x').onclick = function () { f.innerHTML = ''; };
@@ -3273,7 +3280,7 @@
       if (!confirm('Enviar agora o e-mail com o link de dados para ' + $('ct-email').value + '?')) return;
       var b = this; b.disabled = true;
       chamar('rhContratoIniciar', [S.email, S.token, { nome: $('ct-nome').value, email: $('ct-email').value, whatsapp: $('ct-zap').value, menor: $('ct-menor').value, projeto: $('ct-proj').value,
-        funcao: $('ct-func').value, atividades: $('ct-ativ').value, obs: $('ct-obs').value, turnos: x.turnos || '', candidatura: x.codigo || '', candidaturaLinha: x.linha || 0, matricula: x.matricula || '' }],
+        funcao: $('ct-func').value, atividades: $('ct-ativ').value, obs: $('ct-obs').value, turnos: x.turnos || '', modelo: $('ct-mod').value, servicos: $('ct-serv').value, dataFim: $('ct-fim').value, candidatura: x.codigo || '', candidaturaLinha: x.linha || 0, matricula: x.matricula || '' }],
         function (r) { b.disabled = false; if (!r.ok) return rhMsg('erro', r.erro); RH.aba = 'contr'; rhRecarregar('Contratação ' + r.id + ' aberta. O link foi enviado para a pessoa.'); });
     };
   }
@@ -3322,10 +3329,11 @@
       '<br>E-mail: ' + esc(x.c6) + (x.c7 ? ' · WhatsApp: ' + esc(x.c7) : '') + (x.c8 ? ' · Matrícula: ' + esc(x.c8) : '') +
       (x.c12 || x.c13 ? '<br>Dias: ' + esc(x.c12) + ' · Turnos: ' + esc(x.c13) : '') + (x.c25 === 'Sim' ? '<br><b>Menor de idade</b> · responsável: ' + esc(x.c26) + ' (' + esc(x.c30) + ')' : '') +
       '<br>Dados pessoais: ' + (x.c18 ? 'recebidos' + (x.c35 ? ' em ' + esc(x.c35) : '') : 'aguardando a pessoa') +
+      (!ad ? '<br>Documento: <b>' + esc(x.c46 || 'Voluntariado') + '</b>' + (x.c47 ? ' · Estado civil: ' + esc(x.c47) : '') + (x.c49 ? ' · Término: ' + esc(x.c49) : '') + (x.c50 ? '<br>Enviado à representante (gov.br) em ' + esc(x.c50) : '') : '') +
       (x.c37 ? '<br><a target="_blank" href="' + esc(x.c37) + '">Abrir o documento</a>' : '') + (x.c38 ? ' · assinado em ' + esc(x.c38) : '') + (x.c39 ? ' · concluído em ' + esc(x.c39) : '') + '</p>';
     if (!fechado) h += '<div class="botoes"><button class="btn claro" data-ra="editar">Editar dados</button>' + (x.c33 === 'Aguardando dados da pessoa' ? '<button class="btn claro" data-ra="link">Reenviar o link</button>' : '') +
       '<button class="btn claro" data-ra="pdf">Gerar PDF (conferir ou enviar manualmente)</button>' + (d.autentique ? '<button class="btn" data-ra="autentique">Enviar pelo Autentique</button>' : '') +
-      '<button class="btn claro" data-ra="manual">Registrar documento assinado</button><button class="btn" data-ra="concluir">Concluir</button><button class="btn claro" data-ra="cancelar">Cancelar</button></div>';
+      (!ad && (x.c46 || 'Voluntariado') !== 'Parceria Health Army' && x.c37 ? '<button class="btn claro" data-ra="rep">Enviar à Letícia (gov.br)</button>' : '') + '<button class="btn claro" data-ra="manual">Registrar documento assinado</button><button class="btn" data-ra="concluir">Concluir</button><button class="btn claro" data-ra="cancelar">Cancelar</button></div>';
     h += '<div id="ra-sub"></div><div class="botoes"><button class="btn claro" data-ra="fechar">Fechar</button></div></div>';
     el.innerHTML = h;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3338,14 +3346,15 @@
       var ad = x.c3 === 'Adendo';
       sub.innerHTML = '<div class="duas"><div>' + rhIn('re-proj', 'Projeto', x.c9) + rhIn('re-func', 'Função', x.c10) + rhTx('re-ativ', ad ? 'Atribuições (uma por linha)' : 'Funções que vai executar', x.c11) +
         (ad ? rhIn('re-fant', 'Função anterior', x.c42) + rhIn('re-pant', 'Projeto anterior', x.c43) + rhTx('re-obj', 'Objeto do adendo', x.c45) : rhIn('re-dias', 'Dias', x.c12) + rhIn('re-turnos', 'Turnos', x.c13)) +
-        rhIn('re-mat', 'Matrícula', x.c8) + '</div><div>' + rhIn('re-nac', 'Nacionalidade', x.c14) + rhIn('re-prof', 'Profissão', x.c15) + rhIn('re-rg', 'RG', x.c16) + rhIn('re-org', 'Órgão emissor', x.c17) +
+        rhIn('re-mat', 'Matrícula', x.c8) + (ad ? '' : '<label>Documento</label><select id="re-mod">' + rhOpc(RH.d.modelos || ['Voluntariado'], x.c46 || 'Voluntariado') + '</select>' + rhTx('re-serv', 'Serviços ou plano de ação (Anexo I)', x.c48) + rhIn('re-fim', 'Data de término (dd/mm/aaaa)', x.c49)) +
+        '</div><div>' + rhIn('re-nac', 'Nacionalidade', x.c14) + (ad ? '' : rhIn('re-civ', 'Estado civil', x.c47)) + rhIn('re-prof', 'Profissão', x.c15) + rhIn('re-rg', 'RG', x.c16) + rhIn('re-org', 'Órgão emissor', x.c17) +
         rhIn('re-cpf', 'CPF', x.c18) + rhIn('re-rua', 'Rua', x.c19) + rhIn('re-num', 'Número', x.c20) + rhIn('re-bai', 'Bairro', x.c21) + rhIn('re-cid', 'Cidade', x.c22) + rhIn('re-est', 'Estado', x.c23) + rhIn('re-cep', 'CEP', x.c24) +
         '</div></div>' + rhIn('re-obs', 'Observação interna', x.c40) + '<div class="botoes" style="margin-top:8px"><button class="btn" id="re-ok">Salvar</button></div>';
       $('re-ok').onclick = function () {
         var g = function (id) { return $(id) ? $(id).value : undefined; };
         chamar('rhContratoEditar', [S.email, S.token, x.c0, { projeto: g('re-proj'), funcao: g('re-func'), atividades: g('re-ativ'), dias: g('re-dias'), turnos: g('re-turnos'), funcaoAnterior: g('re-fant'),
           projetoAnterior: g('re-pant'), objeto: g('re-obj'), matricula: g('re-mat'), nacionalidade: g('re-nac'), profissao: g('re-prof'), rg: g('re-rg'), orgao: g('re-org'), cpf: g('re-cpf'), rua: g('re-rua'),
-          numero: g('re-num'), bairro: g('re-bai'), cidade: g('re-cid'), estado: g('re-est'), cep: g('re-cep'), obs: g('re-obs') }], fim('Dados salvos.'));
+          numero: g('re-num'), bairro: g('re-bai'), cidade: g('re-cid'), estado: g('re-est'), cep: g('re-cep'), obs: g('re-obs'), modelo: g('re-mod'), servicos: g('re-serv'), dataFim: g('re-fim'), estadoCivil: g('re-civ') }], fim('Dados salvos.'));
       };
       return;
     }
@@ -3354,13 +3363,16 @@
       $('rm-ok').onclick = function () { haArq($('rm-arq')).then(function (arq) { chamar('rhAssinadoManual', [S.email, S.token, x.c0, { data: $('rm-data').value, link: $('rm-link').value, arquivo: arq }], fim('Assinatura registrada.')); }).catch(function (e) { rhMsg('erro', e.message); }); };
       return;
     }
-    var conf = { link: 'Reenviar o link de dados para ' + x.c6 + '?', autentique: 'Enviar o documento pelo Autentique para ' + x.c5 + (x.c25 === 'Sim' ? ', o responsável' : '') + ' e o MAP assinarem?',
+    var repr = x.c3 !== 'Adendo' && (x.c46 || 'Voluntariado') !== 'Parceria Health Army';
+    var conf = { link: 'Reenviar o link de dados para ' + x.c6 + '?', autentique: 'Enviar o documento pelo Autentique para ' + x.c5 + (x.c25 === 'Sim' ? ', o responsável' : '') + (repr ? ' assinar? Depois, o sistema envia à Letícia para assinar pelo gov.br.' : ' e o MAP assinarem?'),
+      rep: 'Enviar o documento para a Letícia (' + (RH.d.representante || '') + ') assinar pelo gov.br?',
       concluir: 'Concluir? A pessoa entra na aba Equipe e no histórico do Cadastro Único' + (x.c3 === 'Adendo' ? ' com a nova função.' : ' e recebe o e-mail de boas-vindas.'), cancelar: 'Cancelar este registro?' };
     if (conf[ac] && !confirm(conf[ac])) return;
     if (b) b.disabled = true;
     rhMsg('ok', 'Processando...');
     if (ac === 'link') chamar('rhReenviarLink', [S.email, S.token, x.c0], fim('Link reenviado.'));
     else if (ac === 'pdf') chamar('rhDocumento', [S.email, S.token, x.c0, 'pdf'], function (r) { if (b) b.disabled = false; if (!r.ok) return rhMsg('erro', r.erro); $('rh-msg').innerHTML = '<div class="msg ok">Documento gerado. <a target="_blank" href="' + esc(r.pdf) + '">Abrir o PDF</a></div>'; });
+    else if (ac === 'rep') chamar('rhEnviarRepresentante', [S.email, S.token, x.c0], fim(function (r) { return 'Documento enviado para ' + r.para + '. Quando ela devolver assinado, use "Registrar documento assinado".'; }));
     else if (ac === 'autentique') chamar('rhDocumento', [S.email, S.token, x.c0, 'autentique'], fim('Documento enviado pelo Autentique. O sistema confere as assinaturas a cada hora.'));
     else if (ac === 'concluir') chamar('rhConcluir', [S.email, S.token, x.c0], fim(function (r) { return 'Concluído e registrado no Cadastro Único (matrícula ' + r.matricula + ').'; }));
     else if (ac === 'cancelar') chamar('rhSituacao', [S.email, S.token, x.c0, 'Cancelada'], fim('Registro cancelado.'));
@@ -3510,17 +3522,20 @@
   }
   function onbFormContrato(x) {
     var f = onbCaixa(x);
-    f.innerHTML = '<div class="card" style="margin:10px 0;background:#faf7fc"><h2>Iniciar contratação · ' + esc(x.c5) + '</h2>' + (/parceir/i.test(x.c26 || '') ? '<div class="msg alerta">Este botão usa o contrato de voluntariado. Para parceiros, faça o contrato de parceria fora do sistema e, depois de assinado, mude a etapa para "Trilha" em Editar.</div>' : '') + '<p style="font-size:12px;color:var(--texto-suave)">A pessoa recebe por e-mail o link pessoal para completar os dados do contrato. Quando o contrato for concluído em Vagas e contratação, a trilha é liberada sozinha.</p><div class="duas"><div>' +
+    f.innerHTML = '<div class="card" style="margin:10px 0;background:#faf7fc"><h2>Iniciar contratação · ' + esc(x.c5) + '</h2>' + '<p style="font-size:12px;color:var(--texto-suave)">A pessoa recebe por e-mail o link pessoal para completar os dados do contrato. Quando o contrato for concluído em Vagas e contratação, a trilha é liberada sozinha.</p><div class="duas"><div>' +
       onbIn('on-c-nome', 'Nome completo *', x.c5) + onbIn('on-c-email', 'E-mail *', x.c6) + onbIn('on-c-zap', 'WhatsApp', x.c7) + '<label>Menor de 18 anos?</label><select id="on-c-menor">' + onbOpc(['Não', 'Sim'], 'Não') + '</select></div><div>' +
       '<label>Projeto / Co-Projeto *</label><input type="text" id="on-c-proj" list="on-projs" value="' + esc(x.c10) + '">' + onbIn('on-c-func', 'Função (presta serviços como) *', x.c9) +
       '<label>Funções que vai executar</label><textarea id="on-c-ativ"></textarea></div></div>' +
+      '<div class="duas"><div><label>Documento *</label><select id="on-c-mod">' + onbOpc(['Voluntariado', 'Parceria Health Army', 'Cooperação Empreende Army'], /parceir/i.test(x.c26 || '') ? 'Parceria Health Army' : 'Voluntariado') + '</select>' +
+      '<p style="font-size:12px;color:var(--texto-suave)">Voluntariado e Empreende Army: a pessoa assina no Autentique e a Letícia assina depois pelo gov.br. Health Army: assinam a Mary e a pessoa.</p></div><div>' +
+      '<label>Serviços (Health Army) ou plano de ação (Empreende Army)</label><textarea id="on-c-serv"></textarea><label>Data de término (Empreende Army)</label><input type="date" id="on-c-fim"></div></div>' +
       '<div class="botoes"><button class="btn" id="on-c-ok">Enviar o link para a pessoa</button><button class="btn claro" id="on-c-x">Cancelar</button></div></div>';
     $('on-c-x').onclick = function () { f.innerHTML = ''; };
     $('on-c-ok').onclick = function () {
       if (!confirm('Enviar agora o e-mail com o link de dados para ' + $('on-c-email').value + '?')) return;
       var b = this; b.disabled = true;
       chamar('rhContratoIniciar', [S.email, S.token, { nome: $('on-c-nome').value, email: $('on-c-email').value, whatsapp: $('on-c-zap').value, menor: $('on-c-menor').value, projeto: $('on-c-proj').value,
-        funcao: $('on-c-func').value, atividades: $('on-c-ativ').value, candidatura: x.c3 || '', candidaturaLinha: Number(x.c4) || 0, matricula: x.c8 || '', onboarding: x.c0 }],
+        funcao: $('on-c-func').value, atividades: $('on-c-ativ').value, modelo: $('on-c-mod').value, servicos: $('on-c-serv').value, dataFim: $('on-c-fim').value, candidatura: x.c3 || '', candidaturaLinha: Number(x.c4) || 0, matricula: x.c8 || '', onboarding: x.c0 }],
         function (r) { b.disabled = false; if (!r.ok) return onbMsg('erro', r.erro); onbRecarregar('Contratação ' + r.id + ' aberta e ligada a este onboarding. O link foi enviado para a pessoa.'); });
     };
   }
