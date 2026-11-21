@@ -155,7 +155,7 @@
     $('capa').classList.add('oculto'); $('app').classList.remove('oculto');
     $('quem-nome').textContent = r.pessoa.nome + (r.pessoa.mat ? ' · ' + r.pessoa.mat : '');
     $('quem-perfil').textContent = r.gestao ? 'Gestão Geral' : (r.perfis.join(', ') || 'Equipe');
-    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + '<button data-v="avisos">Mural de avisos</button>';
+    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('minha-semana') >= 0 ? '<button data-v="area:minha-semana">Minha semana</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + (r.areas.indexOf('validar-equipe') >= 0 ? '<button data-v="area:validar-equipe">Validar equipe</button>' : '') + '<button data-v="avisos">Mural de avisos</button>';
     CATS.forEach(function (c) { m += '<button data-v="cat:' + esc(c) + '">' + esc(c) + '</button>';
       if (c === 'Setores transversais') r.areas.forEach(function (a) { var mod = modulo(a); if (mod && a !== 'health-army' && a !== 'sos-armys' && a !== 'jus-voz') m += '<button class="sub" data-v="area:' + a + '">' + esc(mod.nome) + '</button>'; });
       if (c === 'Acompanhamento' && r.painel) m += '<button class="sub" data-v="painel">Painel da equipe</button>';
@@ -183,6 +183,8 @@
     if (v === 'area:jus-voz') return telaVoz();
     if (v === 'area:trilha') return onbMinhaTela();
     if (v === 'area:cobrar-trilha') return onbCobrancaTela();
+    if (v === 'area:validar-equipe') return vldTela();
+    if (v === 'area:minha-semana') return telaMinhaSemana('');
     if (v.indexOf('area:') === 0) return telaArea(v.slice(5));
     if (v === 'painel') return telaPainel();
     if (v === 'planejamento') { PL.aberto = ''; return telaPlanejamento(); }
@@ -3718,6 +3720,83 @@
       if (r.ok) setTimeout(onbCobrancaTela, 1500);
       else $('oc-msg').scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
+  }
+</script>
+<script>
+  /* ===== Validar equipe e enviar convite + Minha semana (frentes) — versão 1.0 (21/11/2026) ===== */
+  var VL = { d: null, filtro: 'A validar', busca: '' };
+  function vlN(t) { return String(t == null ? '' : t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim(); }
+  function vldTela() {
+    $('conteudo').innerHTML = '<p class="carregando">Carregando a equipe...</p>';
+    chamar('vldDados', [S.email, S.token], function (r) {
+      if (!r.ok) { $('conteudo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      VL.d = r; vldDesenhar();
+    });
+  }
+  function vldConta(s) { return VL.d.lista.filter(function (p) { return s === 'Todas' || p.situacao === s; }).length; }
+  function vldDesenhar(msg) {
+    var d = VL.d, b = vlN(VL.busca);
+    var semConvite = d.lista.filter(function (p) { return p.situacao === 'Validada' && p.contrato === 'Sim' && !p.convite; }).length;
+    var h = '<h1>Validar equipe</h1><p class="sub-tit">Equipe com contrato ou termo ativo · Você cuida de: ' + esc(d.alcance.join(', ')) + '</p><div id="vl-msg"></div>' +
+      '<div class="card"><p style="margin-top:0">Confira cada pessoa: o <b>e-mail principal</b> recebe o convite; os <b>outros e-mails</b> (pessoal ou do projeto) também servem para entrar. ' +
+      'Marque <b>Validada</b> quando a pessoa faz parte da equipe e a documentação está certa. O convite com o link do MAP OS só sai para quem está Validada e tem contrato ativo. ' +
+      '<b>Não faz parte</b> tira a pessoa do acesso e do relatório semanal.</p>' +
+      '<div class="botoes">' + ['A validar', 'Validada', 'Não faz parte', 'Todas'].map(function (s) { return '<button class="btn pq ' + (VL.filtro === s ? '' : 'claro') + '" data-vlf="' + s + '">' + s + ' (' + vldConta(s) + ')</button>'; }).join('') +
+      (semConvite ? ' <button class="btn" id="vl-todos">Enviar convite às validadas sem convite (' + semConvite + ')</button>' : '') + '</div>' +
+      '<input type="text" id="vl-busca" placeholder="Buscar por nome, e-mail, matrícula ou frente..." value="' + esc(VL.busca) + '" style="max-width:420px">' +
+      '<p style="font-size:12px;color:var(--texto-suave);margin-bottom:0">E-mails que ainda podem sair hoje pela conta do MAP: ' + d.cota + '.</p></div>';
+    var l = d.lista.filter(function (p) {
+      return (VL.filtro === 'Todas' || p.situacao === VL.filtro) && (!b || vlN([p.nome, p.mat, p.principal, p.outros, p.frentes].join(' ')).indexOf(b) >= 0);
+    });
+    h += l.length ? '<div style="overflow-x:auto"><table><thead><tr><th>Pessoa</th><th>E-mails</th><th>Frente / setor</th><th>Situação</th><th>Convite</th><th></th></tr></thead><tbody>' +
+      l.map(function (p) {
+        var k = esc(p.chave);
+        return '<tr data-vlk="' + k + '"><td><b>' + esc(p.nome || '-') + '</b><br><small>' + esc(p.mat || 'sem matrícula') + '</small>' +
+          (p.contrato === 'Sim' ? '' : '<br><span class="selo ruim">Sem contrato ativo</span>') + '</td>' +
+          '<td style="min-width:220px"><label>Principal</label><input type="email" class="vl-pri" value="' + esc(p.principal) + '">' +
+          '<label>Outros (separe por vírgula)</label><input type="text" class="vl-out" value="' + esc(p.outros) + '"></td>' +
+          '<td>' + esc(p.frentes || '-') + '</td>' +
+          '<td><select class="vl-sit">' + d.situacoes.map(function (s) { return '<option' + (s === p.situacao ? ' selected' : '') + '>' + esc(s) + '</option>'; }).join('') + '</select>' +
+          (p.validadaPor ? '<br><small>' + esc(p.validadaPor) + ' · ' + esc(p.validadaEm) + '</small>' : '') +
+          '<label>Observação</label><input type="text" class="vl-obs" value="' + esc(p.obs) + '"></td>' +
+          '<td>' + (p.convite ? esc(p.convite) + (p.convites > 1 ? '<br><small>' + p.convites + ' envios</small>' : '') : 'Não enviado') + '</td>' +
+          '<td style="white-space:nowrap"><button class="btn pq" data-vls="' + k + '">Salvar</button><br><button class="btn pq claro" data-vlc="' + k + '" style="margin-top:6px"' +
+          (p.situacao === 'Validada' && p.contrato === 'Sim' ? '' : ' disabled title="Valide a pessoa e salve antes de enviar"') + '>' + (p.convite ? 'Reenviar convite' : 'Enviar convite') + '</button></td></tr>';
+      }).join('') + '</tbody></table></div>' : '<div class="msg ok">Ninguém nesta lista.</div>';
+    $('conteudo').innerHTML = h;
+    if (msg) aviso($('vl-msg'), msg[0], msg[1]);
+    document.querySelectorAll('[data-vlf]').forEach(function (x) { x.onclick = function () { VL.filtro = x.getAttribute('data-vlf'); vldDesenhar(); }; });
+    var bu = $('vl-busca'); bu.oninput = function () { VL.busca = bu.value; clearTimeout(VL.t); VL.t = setTimeout(function () { vldDesenhar(); var x = $('vl-busca'); x.focus(); x.setSelectionRange(x.value.length, x.value.length); }, 400); };
+    document.querySelectorAll('[data-vls]').forEach(function (x) { x.onclick = function () {
+      var tr = x.closest('tr'); x.disabled = true;
+      chamar('vldSalvar', [S.email, S.token, x.getAttribute('data-vls'), { principal: tr.querySelector('.vl-pri').value, outros: tr.querySelector('.vl-out').value, situacao: tr.querySelector('.vl-sit').value, obs: tr.querySelector('.vl-obs').value }], function (r) {
+        if (!r.ok) { x.disabled = false; return aviso($('vl-msg'), 'erro', r.erro); }
+        chamar('vldDados', [S.email, S.token], function (r2) { if (r2.ok) { VL.d = r2; vldDesenhar(['ok', 'Salvo.']); } });
+      });
+    }; });
+    document.querySelectorAll('[data-vlc]').forEach(function (x) { x.onclick = function () { vldEnviar([x.getAttribute('data-vlc')], x); }; });
+    var t = $('vl-todos'); if (t) t.onclick = function () { if (confirm('Enviar o convite do MAP OS para ' + semConvite + ' pessoa(s) validada(s) que ainda não receberam?')) vldEnviar([], t); };
+  }
+  function vldEnviar(chaves, botao) {
+    botao.disabled = true; aviso($('vl-msg'), 'ok', 'Enviando...');
+    chamar('vldConvidar', [S.email, S.token, chaves], function (r) {
+      if (!r.ok) { botao.disabled = false; return aviso($('vl-msg'), 'erro', r.erro); }
+      var t = r.enviados + ' convite(s) enviado(s).' + (r.bloqueadas ? ' ' + r.bloqueadas + ' não saíram: a pessoa precisa estar Validada e com contrato ativo.' : '') +
+        (r.semCota ? ' ' + r.semCota + ' ficaram para amanhã (limite diário de e-mails da conta do MAP).' : '');
+      chamar('vldDados', [S.email, S.token], function (r2) { if (r2.ok) { VL.d = r2; vldDesenhar([r.semCota || r.bloqueadas ? 'erro' : 'ok', t]); } });
+    });
+  }
+
+  // Minha semana: demandas e resumo da semana da pessoa em cada frente/setor da equipe.
+  function telaMinhaSemana(area) {
+    var l = S.dados.equipe || [];
+    if (!l.length) { $('conteudo').innerHTML = '<h1>Minha semana</h1><div class="msg erro">Sua equipe ainda não aparece na lista do sistema. Fale com a sua coordenação.</div>'; return; }
+    var atual = area || l[0].id;
+    $('conteudo').innerHTML = '<h1>Minha semana</h1><p class="sub-tit">Suas demandas e o resumo da semana. Usando o sistema e entregando no prazo, o relatório semanal é gerado sozinho.</p>' +
+      (l.length > 1 ? '<div class="botoes">' + l.map(function (a) { return '<button class="btn pq ' + (a.id === atual ? '' : 'claro') + '" data-msa="' + esc(a.id) + '">' + esc(a.nome) + '</button>'; }).join('') + '</div>' : '') +
+      '<div id="ms-corpo"></div>';
+    document.querySelectorAll('[data-msa]').forEach(function (b) { b.onclick = function () { telaMinhaSemana(b.getAttribute('data-msa')); }; });
+    EQ.aba = ''; eqdTela(atual, 'ms-corpo');
   }
 </script>
 </body>
