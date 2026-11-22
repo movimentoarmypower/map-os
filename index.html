@@ -460,6 +460,7 @@
     if (d.geral || d.coord.length || (d.aux || []).length || d.prof.length) l.push(['agenda', 'Agenda']);
     if (d.extra && d.extra.verEventos) l.push(['eventos', 'Eventos e campanhas']);
     if (d.extra && d.extra.verPautas) l.push(['pautas', 'Marketing: pautas e calendário']);
+    l.push(['conversas', 'Conversas']);
     l.push(['relatorios', 'Relatórios semanais']);
     l.push(['tarefas', 'Tarefas']);
     if (d.geral || (d.coord || []).length) l.push(['acessos', d.geral ? 'Acessos da equipe' : 'Minha equipe']);
@@ -473,7 +474,7 @@
       abas.map(function (a) { return '<button class="btn ' + (a[0] === HA.aba ? '' : 'claro') + '" data-haaba="' + a[0] + '">' + a[1] + '</button>'; }).join('') + '<button class="btn claro" onclick="ir(\'guia:health-army\')">Como usar</button></div><div id="ha-corpo"></div>';
     $('conteudo').innerHTML = h;
     document.querySelectorAll('[data-haaba]').forEach(function (b) { b.onclick = function () { HA.aba = b.getAttribute('data-haaba'); haDesenhar(); }; });
-    ({ painel: haPainel, pacientes: haPacientes, sessao: haSessao, profissionais: haProfissionais, relatorios: haRelatorios, tarefas: haTarefasTela, acessos: haAcessos, eventos: haEventos, pautas: haPautas, inscricoes: hiTelaInscricoes, agenda: hiTelaAgenda, chamada: function () { chTela('health-army', 'ha-corpo'); } })[HA.aba]();
+    ({ conversas: function () { cvTela('health-army', 'ha-corpo'); }, painel: haPainel, pacientes: haPacientes, sessao: haSessao, profissionais: haProfissionais, relatorios: haRelatorios, tarefas: haTarefasTela, acessos: haAcessos, eventos: haEventos, pautas: haPautas, inscricoes: hiTelaInscricoes, agenda: hiTelaAgenda, chamada: function () { chTela('health-army', 'ha-corpo'); } })[HA.aba]();
   }
 
   
@@ -1137,6 +1138,7 @@
     l.push(['acoes', 'Ações, campanhas e parcerias']);
     if (d.extra && d.extra.verEventos) l.push(['eventos', 'Eventos e campanhas']);
     if (d.extra && d.extra.verPautas) l.push(['pautas', 'Marketing: pautas e calendário']);
+    l.push(['conversas', 'Conversas']);
     l.push(['relatorios', 'Relatório semanal']);
     l.push(['tarefas', 'Tarefas']);
     if (d.geral || (d.coord || []).length) l.push(['acessos', d.geral ? 'Acessos da equipe' : 'Minha equipe']);
@@ -1153,7 +1155,7 @@
       abas.map(function (a) { return '<button class="btn ' + (a[0] === SOSX.aba ? '' : 'claro') + '" data-sosaba="' + a[0] + '">' + a[1] + '</button>'; }).join('') +
       '<button class="btn claro" onclick="ir(\'guia:sos-armys\')">Como usar</button></div><div id="ha-corpo"></div>';
     document.querySelectorAll('[data-sosaba]').forEach(function (b) { b.onclick = function () { SOSX.aba = b.getAttribute('data-sosaba'); sosDesenhar(); }; });
-    ({ painel: sosPainel, acomp: sosAcomp, assistidos: sosLista, atendimento: sosAtendimento, projetos: sosProjetos, fundo: sosFundo, acoes: sosAcoes,
+    ({ conversas: function () { cvTela('sos-armys', 'ha-corpo'); }, painel: sosPainel, acomp: sosAcomp, assistidos: sosLista, atendimento: sosAtendimento, projetos: sosProjetos, fundo: sosFundo, acoes: sosAcoes,
       eventos: haEventos, pautas: haPautas, relatorios: sosRelatorio, tarefas: sosTarefasTela, acessos: sosAcessos })[SOSX.aba]();
   }
   function sosAberto(a) { return !/encerrad|arquivad|duplicad/i.test(a.situacao); }
