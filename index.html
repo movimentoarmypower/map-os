@@ -155,7 +155,7 @@
     $('capa').classList.add('oculto'); $('app').classList.remove('oculto');
     $('quem-nome').textContent = r.pessoa.nome + (r.pessoa.mat ? ' · ' + r.pessoa.mat : '');
     $('quem-perfil').textContent = r.gestao ? 'Gestão Geral' : (r.perfis.join(', ') || 'Equipe');
-    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('minha-semana') >= 0 ? '<button data-v="area:minha-semana">Minha semana</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + (r.areas.indexOf('validar-equipe') >= 0 ? '<button data-v="area:validar-equipe">Validar equipe</button>' : '') + '<button data-v="avisos">Mural de avisos</button><button data-v="pedidos">Pedir um serviço</button>';
+    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('minha-semana') >= 0 ? '<button data-v="area:minha-semana">Minha semana</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + (r.areas.indexOf('validar-equipe') >= 0 ? '<button data-v="area:validar-equipe">Validar equipe</button>' : '') + '<button data-v="avisos">Mural de avisos</button><button data-v="pedidos">Pedir um serviço</button><button data-v="diretoria">Semana da Diretoria</button>';
     CATS.forEach(function (c) { m += '<button data-v="cat:' + esc(c) + '">' + esc(c) + '</button>';
       if (c === 'Setores transversais') r.areas.forEach(function (a) { var mod = modulo(a); if (mod && !mod.frente && a !== 'health-army' && a !== 'sos-armys' && a !== 'jus-voz') m += '<button class="sub" data-v="area:' + a + '">' + esc(mod.nome) + '</button>'; });
       if (c === 'Setores transversais') MODULOS.filter(function (x) { return x.frente && x.categoria === c && r.areas.indexOf(x.id) >= 0; }).sort(function (a, b) { return a.nome.localeCompare(b.nome); }).forEach(function (x) { m += '<button class="sub" data-v="area:' + x.id + '">' + esc(x.nome) + '</button>'; });
@@ -197,6 +197,7 @@
     if (v === 'presenca') return telaPresenca('');
     if (v === 'avisos') return telaAvisos();
     if (v === 'pedidos' || v.indexOf('pedidos:') === 0) return telaPedidos(v.split(':')[1] || '');
+    if (v === 'diretoria') return telaDiretoria('');
     if (v === 'guia' || v.indexOf('guia:') === 0) return telaGuia(v.split(':')[1] || '');
   }
   function cardModulo(m) {
@@ -220,7 +221,7 @@
     if (minhas.length) h += '<div class="secao"><h2>Suas áreas</h2><div class="grade">' + minhas.map(cardModulo).join('') + '</div></div>';
     var outros = MODULOS.filter(function (m) { return minhas.indexOf(m) < 0; });
     if (d.gestao && outros.length) h += '<div class="secao"><h2>Outros módulos</h2><div class="grade">' + outros.map(cardModulo).join('') + '</div></div>';
-    $('conteudo').innerHTML = h; ligarCards(); avisosHome();
+    $('conteudo').innerHTML = h; ligarCards(); avisosHome(); dirHome();
   }
   function telaCategoria(c) {
     var l = MODULOS.filter(function (m) { return m.categoria === c; });
@@ -369,19 +370,43 @@
       var h = '<h1>Painel da equipe</h1><p class="sub-tit">Relatórios semanais, tarefas e acessos de quem tem acesso ativo ao MAP OS.</p><div class="nums">' +
         ['Em dia', 'Atenção', 'Precisa de ajuda', 'Sem atividade'].map(function (s) { return '<div class="num"><b>' + (cont[s] || 0) + '</b><span>' + s + '</span></div>'; }).join('') + '</div>';
       if (S.dados.links.gestao) h += '<div class="botoes"><a class="btn claro" target="_blank" href="' + esc(S.dados.links.gestao) + '">Abrir a planilha da Gestão Central</a><button class="btn claro" onclick="ir(\'guia:painel\')">Como usar</button></div>';
-      h += '<div class="secao"><h2>Pessoas</h2><div class="tab-wrap"><table><thead><tr><th>Situação</th><th>Nome / e-mail</th><th>Área e perfil</th><th>Relatórios (esta semana → 3 atrás)</th><th>Tarefas na semana</th><th>Último acesso</th><th>Trilha</th></tr></thead><tbody>' +
+      h += '<div class="secao"><h2>Pessoas</h2><div class="tab-wrap"><table><thead><tr><th>Situação</th><th>Nome / e-mail</th><th>Área e perfil</th><th>Relatórios (esta semana → 3 atrás)</th><th>Tarefas na semana</th><th>Drive (2 semanas)</th><th>Último acesso</th><th>Trilha</th></tr></thead><tbody>' +
         (r.pessoas.map(function (p) {
           return '<tr><td>' + selo(p.situacao) + '</td><td>' + esc(p.nome || '—') + '<br><small>' + esc(p.email) + (p.mat ? ' · ' + esc(p.mat) : '') + '</small></td><td>' + esc(p.perfis) + '</td><td>' +
-            p.semanas.map(function (s) { return '<span class="bola' + (s ? ' s' : '') + '"></span> '; }).join('') + '</td><td>' + p.tarefas + '</td><td>' + esc(p.ultimoAcesso) + '</td><td>' + esc(p.nota) + '</td></tr>';
-        }).join('') || '<tr><td colspan="7" class="vazio">Nenhuma pessoa com acesso ativo na aba Acessos.</td></tr>') + '</tbody></table></div></div>';
-      h += '<div class="secao"><h2>Relatórios recebidos</h2><div class="tab-wrap"><table><thead><tr><th>Enviado em</th><th>Pessoa</th><th>Área</th><th>Tarefas</th><th>Ajuda?</th><th>Leitura</th><th></th></tr></thead><tbody>' +
-        (r.recebidos.map(function (x) {
-          return '<tr><td>' + esc(x.data) + '<br><small>' + esc(x.semana) + '</small></td><td>' + esc(x.nome) + '</td><td>' + esc(x.area) + '</td><td>' + esc(x.tarefas) + '</td><td>' + (x.ajuda === 'Sim' ? selo('Precisa de ajuda') : 'Não') + '</td><td><small>' + esc(x.lido || 'Não lido') + '</small></td>' +
-            '<td><button class="btn pq" data-res="' + x.linha + '">Resumo de relatório</button></td></tr>';
-        }).join('') || '<tr><td colspan="7" class="vazio">Nenhum relatório recebido ainda.</td></tr>') + '</tbody></table></div></div>';
+            p.semanas.map(function (s) { return '<span class="bola' + (s ? ' s' : '') + '"></span> '; }).join('') + '</td><td>' + p.tarefas + '</td><td>' + (p.drive || 0) + '</td><td>' + esc(p.ultimoAcesso) + '</td><td>' + esc(p.nota) + '</td></tr>';
+        }).join('') || '<tr><td colspan="8" class="vazio">Nenhuma pessoa com acesso ativo na aba Acessos.</td></tr>') + '</tbody></table></div></div>';
+      h += '<div class="secao"><h2>Relatórios recebidos</h2><p class="sub-tit" style="margin-bottom:10px">Todas as frentes e setores. O relatório automático sai no sábado, à meia-noite, para quem não enviou o próprio.</p>' +
+        '<div class="botoes"><select id="pn-sem" style="max-width:200px"></select><select id="pn-area" style="max-width:260px"></select><select id="pn-tipo" style="max-width:220px"><option value="">Todos os relatórios</option><option value="manual">Escritos pela pessoa</option><option value="auto">Gerados pelo sistema</option><option value="sem">Sem atividade registrada</option><option value="ajuda">Pediram ajuda</option></select></div>' +
+        '<div id="pn-resumo"></div><div id="pn-rec"></div></div>';
       $('conteudo').innerHTML = h;
-      document.querySelectorAll('[data-res]').forEach(function (b) { b.onclick = function () { abrirResumo(Number(b.getAttribute('data-res'))); }; });
+      PN.r = r; pnFiltros();
     });
+  }
+  var PN = { r: null };
+  function pnFiltros() {
+    var r = PN.r, sems = [], areas = [];
+    r.recebidos.forEach(function (x) { if (sems.indexOf(x.semana) < 0) sems.push(x.semana); if (areas.indexOf(x.area) < 0) areas.push(x.area); });
+    sems.sort().reverse(); areas.sort();
+    $('pn-sem').innerHTML = sems.map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') || '<option value="">Sem relatórios</option>';
+    $('pn-area').innerHTML = '<option value="">Todas as frentes e setores</option>' + areas.map(function (a) { return '<option>' + esc(a) + '</option>'; }).join('');
+    ['pn-sem', 'pn-area', 'pn-tipo'].forEach(function (id) { $(id).onchange = pnDesenhar; });
+    pnDesenhar();
+  }
+  function pnDesenhar() {
+    var sem = $('pn-sem').value, area = $('pn-area').value, tipo = $('pn-tipo').value;
+    var daSem = PN.r.recebidos.filter(function (x) { return x.semana === sem; });
+    var g = {};
+    daSem.forEach(function (x) { var k = g[x.area] = g[x.area] || { t: 0, m: 0, s: 0, a: 0 }; k.t++; if (!x.auto) k.m++; if (x.semAtiv) k.s++; if (x.ajuda === 'Sim') k.a++; });
+    $('pn-resumo').innerHTML = Object.keys(g).length ? '<div class="tab-wrap"><table><thead><tr><th>Frente ou setor</th><th>Relatórios</th><th>Escritos pela pessoa</th><th>Sem atividade registrada</th><th>Pediram ajuda</th></tr></thead><tbody>' +
+      Object.keys(g).sort().map(function (a) { var k = g[a]; return '<tr><td><a href="#" data-pnar="' + esc(a) + '">' + esc(a) + '</a></td><td>' + k.t + '</td><td>' + k.m + '</td><td>' + (k.s ? '<b>' + k.s + '</b>' : 0) + '</td><td>' + (k.a ? selo('Precisa de ajuda') + ' ' + k.a : 0) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '';
+    document.querySelectorAll('[data-pnar]').forEach(function (l) { l.onclick = function (ev) { ev.preventDefault(); $('pn-area').value = l.getAttribute('data-pnar'); pnDesenhar(); }; });
+    var l = daSem.filter(function (x) { return (!area || x.area === area) && (!tipo || (tipo === 'manual' ? !x.auto : tipo === 'auto' ? x.auto : tipo === 'sem' ? x.semAtiv : x.ajuda === 'Sim')); });
+    $('pn-rec').innerHTML = '<p style="font-size:13px;color:var(--texto-suave)">' + l.length + ' relatório(s) nesta seleção.</p><div class="tab-wrap" style="max-height:560px"><table><thead><tr><th>Enviado em</th><th>Pessoa</th><th>Área</th><th>Tipo</th><th>Tarefas</th><th>Ajuda?</th><th>Leitura</th><th></th></tr></thead><tbody>' +
+      (l.map(function (x) {
+        return '<tr><td>' + esc(x.data) + '<br><small>' + esc(x.semana) + '</small></td><td>' + esc(x.nome) + '</td><td>' + esc(x.area) + '</td><td>' + (x.auto ? (x.semAtiv ? selo('Sem atividade') : 'Sistema') : selo('Em dia') + ' Pessoa') + '</td><td>' + esc(x.tarefas) + '</td><td>' + (x.ajuda === 'Sim' ? selo('Precisa de ajuda') : 'Não') + '</td><td><small>' + esc(String(x.lido || 'Não lido').replace(/^Gerado pelo sistema( \| )?/, '') || 'Não lido') + '</small></td>' +
+          '<td><button class="btn pq" data-res="' + x.linha + '">Resumo de relatório</button></td></tr>';
+      }).join('') || '<tr><td colspan="8" class="vazio">Nenhum relatório nesta seleção.</td></tr>') + '</tbody></table></div>';
+    document.querySelectorAll('[data-res]').forEach(function (b) { b.onclick = function () { abrirResumo(Number(b.getAttribute('data-res'))); }; });
   }
   function abrirResumo(linha) {
     $('modal').style.display = 'grid'; $('modal-corpo').innerHTML = '<p class="carregando">Preparando o resumo...</p>';
@@ -780,6 +805,11 @@
       'Relatório semanal (Porta JOD e RH e SAM): preencha "O que foi feito", "Dificuldades" e "Próximos passos" e clique em "Enviar relatório". Marque "Preciso de ajuda da Gestão" se precisar de apoio.',
       'No Health Army o relatório semanal continua sendo o formulário "Relatório Semanal - Health Army" (botão "Enviar meu relatório semanal").',
       'Envie até o fim de cada semana. Quem fica sem enviar aparece no painel da Gestão.'
+    ] },
+    { id: 'diretoria', titulo: 'Semana da Diretoria', para: 'todos', texto: [
+      'No menu, clique em "Semana da Diretoria" para ver o que a Gestora Geral e a Diretoria fizeram em cada semana. Os destaques mais recentes também aparecem na tela inicial.',
+      'Cada resumo tem duas partes: os destaques, escritos pela própria pessoa (reuniões, parcerias, decisões), e a parte automática, com os números do MAP OS e do Drive do MAP.',
+      'Diretoria: escreva os seus destaques e os próximos passos durante a semana. No sábado o sistema fecha a semana; até domingo ainda dá para completar.'
     ] },
     { id: 'avisos', titulo: 'Mural de avisos', para: 'todos', texto: [
       'No menu roxo, "Mural de avisos" mostra os avisos para você. O número ao lado é de avisos novos que você ainda não marcou como lidos.',
@@ -4362,6 +4392,57 @@
       var id = b.getAttribute('data-dnok'); b.disabled = true;
       chamar('pdDenunciaAtualizar', [S.email, S.token, id, { situacao: $('dns-' + id).value, nota: $('dnn-' + id).value, resp: 'eu' }], function (x) { if (!x.ok) { b.disabled = false; return aviso($('pdf-msg'), 'erro', x.erro); } pdFilaTela(PD.setor, PD.el, ['ok', 'Denúncia atualizada.']); });
     }; });
+  }
+</script>
+
+<script>
+  
+  var DIR = { d: null };
+  function dirTexto(t) { return esc(t || '').replace(/\n/g, '<br>'); }
+  function dirCartao(p, compacto) {
+    var auto = String(p.auto || '').split('\n').filter(Boolean);
+    return '<div class="card" style="margin-bottom:12px"><h3 style="margin:0 0 2px">' + esc(p.nome) + '</h3><p style="margin:0 0 10px;color:var(--texto-suave);font-size:13px">' + esc(p.cargo) + '</p>' +
+      (p.destaques ? '<b>Destaques da semana</b><p style="margin:4px 0 10px">' + dirTexto(compacto && p.destaques.length > 320 ? p.destaques.slice(0, 320) + '...' : p.destaques) + '</p>' : (compacto ? '' : '<p class="vazio" style="padding:0 0 8px">Sem destaques escritos nesta semana.</p>')) +
+      (!compacto && p.proximos ? '<b>Próximos passos</b><p style="margin:4px 0 10px">' + dirTexto(p.proximos) + '</p>' : '') +
+      (auto.length ? '<details' + (compacto ? '' : ' open') + '><summary style="font-size:13px">No MAP OS e no Drive do MAP</summary><ul style="margin:6px 0 0;font-size:13px">' + auto.map(function (x) { return '<li>' + esc(x.replace(/^- /, '')) + '</li>'; }).join('') + '</ul></details>' : '') +
+      '</div>';
+  }
+  function telaDiretoria(sem, msg) {
+    $('conteudo').innerHTML = '<p class="carregando">Carregando...</p>';
+    chamar('dirAbrir', [S.email, S.token, sem || ''], function (r) {
+      if (!r.ok) { $('conteudo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      DIR.d = r;
+      var h = '<h1>Semana da Diretoria</h1><p class="sub-tit">O que a Gestora Geral e a Diretoria do MAP fizeram em cada semana. A parte automática mostra só números do MAP OS e do Drive do MAP; os destaques são escritos por cada pessoa.</p><div id="dir-msg"></div>' +
+        '<div class="botoes"><select id="dir-sem" style="max-width:240px">' + r.semanas.map(function (s) { return '<option value="' + esc(s) + '"' + (s === r.semana ? ' selected' : '') + '>' + esc(s) + (s === r.atual ? ' (semana atual)' : '') + '</option>'; }).join('') + '</select>' +
+        '<span style="font-size:13px;color:var(--texto-suave);align-self:center">' + esc(r.de + ' a ' + r.ate) + (r.semana === r.atual ? ' · em andamento, fecha no sábado' : (r.publicada ? ' · publicada' : '')) + '</span></div>';
+      var eu = r.lista.filter(function (p) { return p.eu; })[0];
+      if (eu && r.podeEscrever) {
+        h += '<div class="card secao"><h2>Meus destaques desta semana</h2><p class="vazio" style="padding:0 0 6px">Reuniões, parcerias, decisões e tudo o que você fez fora do sistema. A equipe toda vai ver.</p>' +
+          '<label>Destaques</label><textarea id="dir-dest" style="min-height:140px">' + esc(eu.destaques) + '</textarea>' +
+          '<label>Próximos passos</label><textarea id="dir-prox">' + esc(eu.proximos) + '</textarea>' +
+          '<div class="botoes"><button class="btn" id="dir-ok">Salvar</button>' + (eu.escrito ? '<span style="font-size:13px;color:var(--texto-suave);align-self:center">Salvo em ' + esc(eu.escrito) + '</span>' : '') + '</div></div>';
+      }
+      h += r.lista.map(function (p) { return dirCartao(p, false); }).join('') || '<p class="vazio">Ninguém da Diretoria cadastrado.</p>';
+      $('conteudo').innerHTML = h;
+      if (msg) aviso($('dir-msg'), msg[0], msg[1]);
+      $('dir-sem').onchange = function () { telaDiretoria(this.value); };
+      if ($('dir-ok')) $('dir-ok').onclick = function () {
+        var b = this; b.disabled = true;
+        chamar('dirSalvar', [S.email, S.token, r.semana, { destaques: $('dir-dest').value, proximos: $('dir-prox').value }], function (x) {
+          b.disabled = false; if (!x.ok) return aviso($('dir-msg'), 'erro', x.erro); telaDiretoria(r.semana, ['ok', 'Destaques salvos. A equipe já pode ver.']);
+        });
+      };
+    });
+  }
+  
+  function dirHome() {
+    chamar('dirAbrir', [S.email, S.token, ''], function (r) {
+      if (!r.ok || document.getElementById('dir-home')) return;
+      var l = r.lista.filter(function (p) { return p.destaques || p.auto; });
+      var alvo = document.querySelector('#conteudo .sub-tit'), h1 = document.querySelector('#conteudo h1'); if (!alvo || !l.length || !h1 || !/^Olá/.test(h1.textContent)) return;
+      alvo.insertAdjacentHTML('afterend', '<div id="dir-home" class="secao"><h2>Semana da Diretoria · ' + esc(r.de + ' a ' + r.ate) + '</h2>' +
+        l.map(function (p) { return dirCartao(p, true); }).join('') + '<button class="btn claro" onclick="ir(\'diretoria\')">Ver tudo e as semanas anteriores</button></div>');
+    });
   }
 </script>
 
