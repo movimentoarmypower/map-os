@@ -155,7 +155,13 @@
     $('capa').classList.add('oculto'); $('app').classList.remove('oculto');
     $('quem-nome').textContent = r.pessoa.nome + (r.pessoa.mat ? ' · ' + r.pessoa.mat : '');
     $('quem-perfil').textContent = r.gestao ? 'Gestão Geral' : (r.perfis.join(', ') || 'Equipe');
-    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('minha-semana') >= 0 ? '<button data-v="area:minha-semana">Minha semana</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + (r.areas.indexOf('validar-equipe') >= 0 ? '<button data-v="area:validar-equipe">Validar equipe</button>' : '') + '<button data-v="avisos">Mural de avisos</button><button data-v="pedidos">Pedir um serviço</button><button data-v="diretoria">Semana da Diretoria</button>';
+    if (r.areas.length === 1 && r.areas[0] === 'ea-clube' && !r.gestao) {
+      $('quem-perfil').textContent = 'Clube de Empreendedores EA';
+      $('menu').innerHTML = '<button data-v="area:ea-clube" class="ativo">Meu Clube EA</button>';
+      $('menu').querySelector('button').onclick = function () { ir('area:ea-clube'); };
+      return ir('area:ea-clube');
+    }
+    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('minha-semana') >= 0 ? '<button data-v="area:minha-semana">Minha semana</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + (r.areas.indexOf('validar-equipe') >= 0 ? '<button data-v="area:validar-equipe">Validar equipe</button>' : '') + (r.areas.indexOf('ea-clube') >= 0 ? '<button data-v="area:ea-clube">Meu Clube EA</button>' : '') + '<button data-v="avisos">Mural de avisos</button><button data-v="pedidos">Pedir um serviço</button><button data-v="diretoria">Semana da Diretoria</button>';
     CATS.forEach(function (c) { m += '<button data-v="cat:' + esc(c) + '">' + esc(c) + '</button>';
       if (c === 'Setores transversais') r.areas.forEach(function (a) { var mod = modulo(a); if (mod && !mod.frente && a !== 'health-army' && a !== 'sos-armys' && a !== 'jus-voz') m += '<button class="sub" data-v="area:' + a + '">' + esc(mod.nome) + '</button>'; });
       if (c === 'Setores transversais') MODULOS.filter(function (x) { return x.frente && x.categoria === c && r.areas.indexOf(x.id) >= 0; }).sort(function (a, b) { return a.nome.localeCompare(b.nome); }).forEach(function (x) { m += '<button class="sub" data-v="area:' + x.id + '">' + esc(x.nome) + '</button>'; });
@@ -189,6 +195,7 @@
     if (v === 'area:cobrar-trilha') return onbCobrancaTela();
     if (v === 'area:validar-equipe') return vldTela();
     if (v === 'area:financeiro') return finTela('');
+    if (v === 'area:ea-clube') { EA.aba = 'inicio'; return eaTela('', 'conteudo'); }
     if (v === 'area:minha-semana') return telaMinhaSemana('');
     if (v.indexOf('area:') === 0 && modulo(v.slice(5)) && modulo(v.slice(5)).frente) return telaFrente(v.slice(5));
     if (v.indexOf('area:') === 0) return telaArea(v.slice(5));
@@ -4004,6 +4011,7 @@
     l.push(['projetos', 'Coprojetos']);
     l.push(['conversas', 'Conversas' + (d.naoLidas ? ' (' + d.naoLidas + ')' : '')]);
     l.push(['plano', 'Planejamento anual']);
+    if (d.frente.id === 'f-ea') l.push(['clube', 'Clube EA']);
     l.push(['equipe', 'Equipe e demandas']);
     l.push(['semana', 'Minha semana']);
     l.push(['mural', 'Mural da equipe']);
@@ -4028,6 +4036,7 @@
     if (atual === 'projetos') return frProjetos(el);
     if (atual === 'conversas') return cvTela(area, el);
     if (atual === 'plano') return plNaFrente(area, el);
+    if (atual === 'clube') { EA.gaba = EA.gaba || 'membros'; return eaGestaoTela(el); }
     if (atual === 'equipe') { EQ.aba = ''; return eqdTela(area, el); }
     if (atual === 'semana') return frSemana(area, el);
     if (atual === 'mural') return frMural(area, d.frente.nome, el);
@@ -4380,6 +4389,427 @@
       });
       if (window.FR && FR.d && FR.d.frente) { var n2 = r.porFrente[FR.d.frente.id] || 0; FR.d.naoLidas = n2; var t = document.querySelector('[data-fra="conversas"]'); if (t) t.textContent = 'Conversas' + (n2 ? ' (' + n2 + ')' : ''); }
     });
+  }
+</script>
+
+<style>
+  .ea-top{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .ea-foto{width:84px;height:84px;border-radius:50%;object-fit:cover;background:#f1e7f3;display:grid;place-items:center;font-size:30px;color:var(--roxo);font-weight:bold;flex-shrink:0}
+  .ea-cart{border:1px solid var(--borda);background:#fff;border-radius:12px;padding:12px;margin-bottom:10px}
+  .ea-cart h3{margin:0 0 4px;font-size:15px;color:var(--roxo-escuro)}
+  .ea-cart small,.ea-mini{color:var(--texto-suave);font-size:12px}
+  .ea-barra{height:8px;background:#f1e7f3;border-radius:6px;overflow:hidden;margin:6px 0}.ea-barra i{display:block;height:100%;background:var(--verde)}
+  .ea-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .ea-cal .d{background:#fff;border:1px solid var(--borda);border-radius:8px;min-height:74px;padding:4px;font-size:11px}
+  .ea-cal .d.fora{background:transparent;border-color:transparent}
+  .ea-cal .d b{font-size:12px;color:var(--texto-suave)}
+  .ea-cal .ch{display:block;margin-top:3px;border-radius:6px;padding:2px 4px;background:#f1e7f3;color:var(--roxo);cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .ea-cal .ch.Publicado{background:#e3f4ef;color:var(--verde)}.ea-cal .ch.Agendado{background:#fdf1dc;color:var(--amarelo)}
+  .ea-cal .sem{text-align:center;font-size:11px;font-weight:bold;color:var(--texto-suave)}
+  .ea-meta{display:grid;grid-template-columns:2fr 1.3fr 1fr 1fr auto;gap:6px;margin-bottom:6px}
+  .ea-tx{white-space:pre-wrap;line-height:1.45}
+  @media(max-width:700px){.ea-meta{grid-template-columns:1fr}.ea-cal .d{min-height:54px}}
+</style>
+<script>
+  
+  var EA = { d: null, aba: 'inicio', alvo: '', el: 'conteudo', mes: null, g: null, gaba: 'membros', edMat: null };
+  function eaLinks(t) { return esc(t).replace(/(https:\/\/[^\s<]+)/g, '<a target="_blank" rel="noopener" href="$1">$1</a>'); }
+  function eaSel(id, l, atual, vazio) { return '<select id="' + id + '">' + (vazio ? '<option value="">' + esc(vazio) + '</option>' : '') + l.map(function (x) { return '<option' + (x === atual ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select>'; }
+  function eaIn(id, rot, v, ph) { return '<label>' + rot + '</label><input type="text" id="' + id + '" value="' + esc(v || '') + '" placeholder="' + esc(ph || '') + '">'; }
+  function eaTa(id, rot, v, ph) { return '<label>' + rot + '</label><textarea id="' + id + '" placeholder="' + esc(ph || '') + '">' + esc(v || '') + '</textarea>'; }
+  function eaV(id) { var e = $(id); return e ? e.value : ''; }
+  function eaRes(id, r, okTxt, depois) { if (!r.ok) return aviso($(id), 'erro', r.erro); aviso($(id), 'ok', okTxt); if (depois) setTimeout(depois, 700); }
+
+  
+  function eaTela(alvo, el) {
+    EA.alvo = alvo || ''; EA.el = el || 'conteudo';
+    $(EA.el).innerHTML = '<p class="carregando">Abrindo o Clube...</p>';
+    chamar('eaAbrir', [S.email, S.token, EA.alvo], function (r) {
+      if (!r.ok) { $(EA.el).innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      if (r.semCadastro) { $(EA.el).innerHTML = '<h1>Clube EA</h1><p class="vazio">Você é da equipe do Empreende Army. A área de cada empreendedora fica em Empreende Army > Clube EA > Empreendedoras > Ver área.</p>'; return; }
+      EA.d = r; eaDesenhar();
+    });
+  }
+  function eaAbas() {
+    var d = EA.d, nd = d.diagnosticos.filter(function (x) { return x.situacao !== 'Tarefas concluídas'; }).length;
+    return [['inicio', 'Início'], ['perfil', 'Meu perfil e negócio'], ['trilha', 'Trilha e materiais'], ['ano', 'Planejamento do ano'], ['negocio', 'Plano de negócio'],
+      ['conteudos', 'Calendário de conteúdos'], ['pedidos', 'Pedidos e ajuda'], ['diag', 'Diagnósticos e tarefas' + (nd ? ' (' + nd + ')' : '')], ['exchange', 'Exchange'], ['mural', 'Mural']];
+  }
+  function eaDesenhar() {
+    var d = EA.d, m = d.membro, ini = String(m.nome || '?').charAt(0).toUpperCase();
+    var foto = m.foto ? '<img class="ea-foto" src="' + esc(m.foto) + '" alt="">' : '<div class="ea-foto">' + esc(ini) + '</div>';
+    var h = (d.soLeitura ? '<div class="msg ok">Você está vendo a área de ' + esc(m.nome) + ' (só leitura). <a href="#" id="ea-volta">Voltar ao painel</a></div>' : '') +
+      '<div class="ea-top">' + foto + '<div><h1>' + esc(m.nome) + '</h1><p class="sub-tit" style="margin:0">' + esc(m.negocio || 'Clube de Empreendedores EA') + (m.mat ? ' · Matrícula ' + esc(m.mat) : '') +
+      ' · <span class="selo ' + (m.situacao === 'Ativa' ? 'ok' : 'ruim') + '">' + esc(m.situacao) + '</span></p></div></div>' +
+      '<div class="botoes">' + eaAbas().map(function (a) { return '<button class="btn pq ' + (a[0] === EA.aba ? '' : 'claro') + '" data-eaa="' + a[0] + '">' + a[1] + '</button>'; }).join('') + '</div><div id="ea-corpo"></div>';
+    $(EA.el).innerHTML = h;
+    if ($('ea-volta')) $('ea-volta').onclick = function (e) { e.preventDefault(); EA.alvo = ''; eaGestaoTela(EA.el); };
+    document.querySelectorAll('[data-eaa]').forEach(function (b) { b.onclick = function () { EA.aba = b.getAttribute('data-eaa'); eaDesenhar(); }; });
+    ({ inicio: eaInicio, perfil: eaPerfil, trilha: eaTrilha, ano: eaAno, negocio: eaNegocio, conteudos: eaConteudos, pedidos: eaPedidos, diag: eaDiag, exchange: eaExchange, mural: eaMural })[EA.aba]();
+    if (d.soLeitura) document.querySelectorAll('#ea-corpo button.salva, #ea-corpo input, #ea-corpo textarea, #ea-corpo select').forEach(function (x) { x.disabled = true; });
+  }
+  function eaRecarregar(aba) { if (aba) EA.aba = aba; eaTela(EA.alvo, EA.el); }
+
+  function eaInicio() {
+    var d = EA.d, m = d.membro, feitos = d.materiais.filter(function (x) { return x.feito; }).length, tot = d.materiais.length;
+    var tar = 0, tarF = 0; d.diagnosticos.forEach(function (g) { g.tarefas.forEach(function (t) { tar++; if (t.feito) tarF++; }); });
+    var h = '<div class="nums"><div class="num"><b>' + (tot ? Math.round(100 * feitos / tot) : 0) + '%</b><span>da trilha concluída (' + feitos + ' de ' + tot + ')</span></div>' +
+      '<div class="num"><b>' + tarF + '/' + tar + '</b><span>tarefas dos diagnósticos feitas</span></div>' +
+      '<div class="num"><b>' + d.conteudos.filter(function (c) { return c.situacao !== 'Publicado'; }).length + '</b><span>conteúdos planejados</span></div>' +
+      '<div class="num"><b>' + d.cota.filter(function (c) { return !c.usado; }).length + '</b><span>análises gratuitas disponíveis em ' + d.ano + '</span></div></div>';
+    h += '<div class="duas"><div class="card"><h2>Minha assinatura</h2><p>Modalidade: <b>' + esc(m.modalidade || '-') + '</b><br>Válida até: <b>' + esc(m.ate || '-') + '</b>' +
+      (m.dias != null && m.dias <= 7 && m.dias >= 0 ? ' <span class="selo alerta">vence em ' + m.dias + ' dia(s)</span>' : '') + '<br>Desde: ' + esc(m.inicio || '-') +
+      (m.mentoria ? '<br>Mentoria ativa até: <b>' + esc(m.mentoria) + '</b>' : '') + '</p>' +
+      '<p class="ea-mini">Para renovar ou mudar de plano (mensal, semestral ou anual), use os links do site do MAP com o mesmo e-mail. O acesso é renovado sozinho quando o pagamento é confirmado.</p>' +
+      '<a class="btn" target="_blank" rel="noopener" href="' + esc(d.siteRenovar) + '">Renovar pelo site</a></div>';
+    h += '<div class="card"><h2>Por onde começar</h2><ol style="margin:0;padding-left:18px;line-height:1.7">' +
+      '<li>Preencha <b>Meu perfil e negócio</b> (foto, redes e site).</li><li>Comece a <b>Trilha</b> pela área "Comece por aqui".</li>' +
+      '<li>Monte o seu <b>Planejamento do ano</b> e o <b>Plano de negócio</b> com metas.</li><li>Organize os posts no <b>Calendário de conteúdos</b>.</li>' +
+      '<li>Use as suas <b>análises gratuitas</b> do ano em Pedidos e ajuda.</li></ol></div></div>';
+    if (d.mural.length) h += '<h2 style="margin-top:18px">Últimos avisos</h2>' + d.mural.slice(0, 3).map(eaAvisoHtml).join('');
+    $('ea-corpo').innerHTML = h;
+  }
+  function eaAvisoHtml(a) { return '<div class="cv-mural"><b>' + esc(a.titulo) + '</b> <small class="ea-mini">' + esc(a.em) + ' · ' + esc(a.por) + '</small><div class="ea-tx">' + eaLinks(a.texto) + '</div>' + (a.link ? '<a target="_blank" rel="noopener" href="' + esc(a.link) + '">Abrir link</a>' : '') + '</div>'; }
+
+  function eaPerfil() {
+    var m = EA.d.membro;
+    $('ea-corpo').innerHTML = '<div class="card"><h2>Meu perfil e negócio</h2><div class="duas"><div>' +
+      '<label>Foto</label><input type="file" id="ea-pf-foto" accept="image/*"> <small class="ea-mini">O sistema reduz a foto sozinho.</small>' + (m.foto ? ' <a href="#" id="ea-pf-tirar">Tirar foto</a>' : '') +
+      eaIn('ea-pf-nome', 'Nome', m.nome) + eaIn('ea-pf-neg', 'Nome do negócio', m.negocio) + eaIn('ea-pf-seg', 'Segmento (ex.: moda, alimentação, beleza)', m.segmento) +
+      eaIn('ea-pf-cid', 'Cidade/UF', m.cidade) + eaIn('ea-pf-wpp', 'WhatsApp do negócio', m.whats) + '</div><div>' +
+      eaIn('ea-pf-ig', 'Instagram', m.instagram, '@seunegocio') + eaIn('ea-pf-site', 'Site', m.site, 'https://') + eaTa('ea-pf-redes', 'Outras redes (TikTok, YouTube, Facebook...)', m.redes) +
+      eaTa('ea-pf-sobre', 'Sobre o negócio (o que vende, para quem, há quanto tempo)', m.sobre) + '</div></div>' +
+      '<p class="ea-mini">Matrícula: ' + esc(m.mat || 'será ligada pela equipe') + '. O seu perfil aparece para a mentoria e, no Exchange, só o nome e o negócio aparecem para as outras empreendedoras.</p>' +
+      '<button class="btn salva" id="ea-pf-salvar">Salvar perfil</button><div id="ea-pf-msg"></div></div>';
+    var foto;
+    $('ea-pf-foto').onchange = function () {
+      var f = this.files[0]; if (!f) return;
+      var rd = new FileReader(); rd.onload = function () {
+        var img = new Image(); img.onload = function () {
+          var s = 220, c = document.createElement('canvas'), k = Math.min(s / img.width, s / img.height, 1);
+          c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          foto = c.toDataURL('image/jpeg', 0.78); aviso($('ea-pf-msg'), 'ok', 'Foto pronta. Clique em Salvar perfil.');
+        }; img.src = rd.result;
+      }; rd.readAsDataURL(f);
+    };
+    if ($('ea-pf-tirar')) $('ea-pf-tirar').onclick = function (e) { e.preventDefault(); foto = ''; aviso($('ea-pf-msg'), 'ok', 'A foto será retirada ao salvar.'); };
+    $('ea-pf-salvar').onclick = function () {
+      var b = this; b.disabled = true;
+      var d = { nome: eaV('ea-pf-nome'), negocio: eaV('ea-pf-neg'), segmento: eaV('ea-pf-seg'), cidade: eaV('ea-pf-cid'), whats: eaV('ea-pf-wpp'), instagram: eaV('ea-pf-ig'), site: eaV('ea-pf-site'), redes: eaV('ea-pf-redes'), sobre: eaV('ea-pf-sobre') };
+      if (foto !== undefined) d.foto = foto;
+      chamar('eaPerfilSalvar', [S.email, S.token, d], function (r) { b.disabled = false; eaRes('ea-pf-msg', r, 'Perfil salvo.', function () { eaRecarregar('perfil'); }); });
+    };
+  }
+
+  function eaIcone(t) { return { 'PDF': '📄', 'Vídeo': '▶', 'Áudio': '🎧', 'Imagem': '🖼', 'Documento': '📄' }[t] || '🔗'; }
+  function eaTrilha() {
+    var d = EA.d, h = '<p class="vazio">Materiais da mentoria organizados por área. Marque como concluído o que você já estudou.</p>';
+    d.areas.forEach(function (a) {
+      var l = d.materiais.filter(function (x) { return x.area === a; }); if (!l.length) return;
+      var f = l.filter(function (x) { return x.feito; }).length;
+      h += '<details class="pend"' + (f < l.length ? ' open' : '') + '><summary>' + esc(a) + ' · ' + f + ' de ' + l.length + '</summary><div class="ea-barra"><i style="width:' + Math.round(100 * f / l.length) + '%"></i></div>' +
+        l.map(function (x) { return '<div class="tarefa"><input type="checkbox" class="ea-mat" data-id="' + esc(x.id) + '"' + (x.feito ? ' checked' : '') + '><div><b>' + eaIcone(x.tipo) + ' <a target="_blank" rel="noopener" href="' + esc(x.link) + '">' + esc(x.titulo) + '</a></b>' +
+          '<small>' + esc(x.tipo) + (x.programa && x.programa !== 'Trilha geral' ? ' · ' + esc(x.programa) : '') + (x.feito ? ' · concluído em ' + esc(x.feito) : '') + '</small>' + (x.desc ? '<div class="ea-tx" style="font-size:13px">' + eaLinks(x.desc) + '</div>' : '') + '</div></div>'; }).join('') + '</details>';
+    });
+    if (!d.materiais.length) h += '<p class="vazio">A mentoria ainda está organizando os materiais. Eles aparecem aqui assim que forem publicados.</p>';
+    $('ea-corpo').innerHTML = h;
+    document.querySelectorAll('.ea-mat').forEach(function (c) { c.onchange = function () {
+      if (EA.d.soLeitura) return;
+      chamar('eaMaterialFeito', [S.email, S.token, c.getAttribute('data-id'), c.checked], function (r) { if (!r.ok) { alert(r.erro); c.checked = !c.checked; } else eaRecarregar('trilha'); });
+    }; });
+  }
+
+  var EA_ANO = [['visao', 'Como eu quero que o meu negócio esteja no fim do ano?'], ['obj', 'Meus 3 objetivos principais'], ['fat', 'Faturamento que quero alcançar (por mês e no ano)'],
+    ['t1', '1º trimestre (jan a mar): foco e ações'], ['t2', '2º trimestre (abr a jun): foco e ações'], ['t3', '3º trimestre (jul a set): foco e ações'], ['t4', '4º trimestre (out a dez): foco e ações'],
+    ['aprender', 'O que eu preciso aprender este ano'], ['parar', 'O que vou parar de fazer / começar a fazer'], ['apoio', 'Que apoio vou pedir (mentoria, Exchange, rede)']];
+  var EA_NEG = [['proposta', 'Proposta de valor: que problema eu resolvo e por que me escolhem'], ['publico', 'Público: quem compra de mim'], ['produtos', 'Produtos e serviços (com preços)'],
+    ['canais', 'Canais de venda e divulgação'], ['concorrencia', 'Concorrentes e o meu diferencial'], ['custos', 'Custos fixos e variáveis do mês'], ['recursos', 'Recursos e parcerias que tenho ou preciso'], ['riscos', 'Riscos e como vou me proteger']];
+  function eaPlanoForm(tipo, campos, intro, comMetas) {
+    var p = (tipo === 'Ano' ? EA.d.planoAno : EA.d.planoNegocio), v = p.dados || {};
+    var h = '<div class="card"><h2>' + (tipo === 'Ano' ? 'Planejamento do ano ' : 'Plano de negócio ') + EA.d.ano + '</h2><p class="vazio">' + intro + (p.atualizado ? ' Última atualização: ' + esc(p.atualizado) + '.' : '') + '</p>' +
+      campos.map(function (c) { return eaTa('ea-pl-' + c[0], c[1], v[c[0]]); }).join('');
+    if (comMetas) {
+      h += '<h2 style="margin-top:16px">Metas</h2><p class="ea-mini">Meta clara, como medir, até quando e em que pé está.</p><div id="ea-metas">' + (v.metas || []).map(eaMetaLinha).join('') + '</div><button class="btn claro pq salva" id="ea-meta-mais">+ Meta</button>';
+    }
+    h += '<div style="margin-top:14px"><button class="btn salva" id="ea-pl-salvar">Salvar</button></div><div id="ea-pl-msg"></div></div>';
+    $('ea-corpo').innerHTML = h;
+    if (comMetas) $('ea-meta-mais').onclick = function () { $('ea-metas').insertAdjacentHTML('beforeend', eaMetaLinha({})); eaLigarMetas(); };
+    if (comMetas) eaLigarMetas();
+    $('ea-pl-salvar').onclick = function () {
+      var b = this, d = {}; b.disabled = true;
+      campos.forEach(function (c) { d[c[0]] = eaV('ea-pl-' + c[0]); });
+      if (comMetas) d.metas = [].slice.call(document.querySelectorAll('.ea-meta')).map(function (r) { var q = function (k) { return r.querySelector('[data-k="' + k + '"]').value; }; return { meta: q('meta'), indicador: q('indicador'), prazo: q('prazo'), situacao: q('situacao') }; }).filter(function (x) { return x.meta.trim(); });
+      chamar('eaPlanoSalvar', [S.email, S.token, tipo, d], function (r) { b.disabled = false; eaRes('ea-pl-msg', r, 'Salvo.', function () { eaRecarregar(); }); });
+    };
+  }
+  function eaMetaLinha(m) {
+    return '<div class="ea-meta"><input type="text" data-k="meta" placeholder="Meta (ex.: vender 40 kits por mês)" value="' + esc(m.meta || '') + '"><input type="text" data-k="indicador" placeholder="Como medir" value="' + esc(m.indicador || '') + '">' +
+      '<input type="text" data-k="prazo" placeholder="Prazo (mês/ano)" value="' + esc(m.prazo || '') + '"><select data-k="situacao">' + ['Não comecei', 'Em andamento', 'Alcançada', 'Revisar'].map(function (s) { return '<option' + (s === m.situacao ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select>' +
+      '<button class="btn claro pq salva ea-meta-x" title="Tirar">✕</button></div>';
+  }
+  function eaLigarMetas() { document.querySelectorAll('.ea-meta').forEach(function (r) { r.classList.add('ea-meta'); }); document.querySelectorAll('.ea-meta-x').forEach(function (b) { b.onclick = function () { b.parentNode.remove(); }; }); }
+  function eaAno() { eaPlanoForm('Ano', EA_ANO, 'O mapa do seu ano: onde quer chegar e o foco de cada trimestre. A mentoria orienta e você executa.', false); }
+  function eaNegocio() { eaPlanoForm('Negócio', EA_NEG, 'O retrato do seu negócio e as metas que você vai acompanhar.', true); }
+
+  function eaConteudos() {
+    var d = EA.d, hoje = new Date();
+    if (!EA.mes) EA.mes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    var y = EA.mes.getFullYear(), mo = EA.mes.getMonth(), p = function (n) { return ('0' + n).slice(-2); };
+    var nomes = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+    var h = '<div class="botoes" style="align-items:center"><button class="btn claro pq" id="ea-m-ant">◀</button><b style="font-size:17px">' + nomes[mo] + ' de ' + y + '</b><button class="btn claro pq" id="ea-m-prox">▶</button>' +
+      '<button class="btn pq salva" id="ea-ct-novo">Novo conteúdo</button></div><div id="ea-ct-form"></div><div class="ea-cal">' + ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'].map(function (s) { return '<div class="sem">' + s + '</div>'; }).join('');
+    var ini = new Date(y, mo, 1).getDay(), dias = new Date(y, mo + 1, 0).getDate();
+    for (var i = 0; i < ini; i++) h += '<div class="d fora"></div>';
+    for (var dd = 1; dd <= dias; dd++) {
+      var iso = y + '-' + p(mo + 1) + '-' + p(dd);
+      h += '<div class="d"><b>' + dd + '</b>' + d.conteudos.filter(function (c) { return c.iso === iso; }).map(function (c) { return '<span class="ch ' + esc(c.situacao) + '" data-ct="' + esc(c.id) + '" title="' + esc(c.rede + ' · ' + c.tema) + '">' + esc(c.rede.slice(0, 4)) + ' · ' + esc(c.tema) + '</span>'; }).join('') + '</div>';
+    }
+    h += '</div>';
+    var doMes = d.conteudos.filter(function (c) { return c.iso.slice(0, 7) === y + '-' + p(mo + 1); });
+    h += '<p class="ea-mini" style="margin-top:8px">' + doMes.length + ' conteúdo(s) neste mês · ' + d.contSit.map(function (s) { return s + ': ' + doMes.filter(function (c) { return c.situacao === s; }).length; }).join(' · ') + '</p>';
+    $('ea-corpo').innerHTML = h;
+    $('ea-m-ant').onclick = function () { EA.mes = new Date(y, mo - 1, 1); eaConteudos(); };
+    $('ea-m-prox').onclick = function () { EA.mes = new Date(y, mo + 1, 1); eaConteudos(); };
+    $('ea-ct-novo').onclick = function () { eaCtForm({}); };
+    document.querySelectorAll('[data-ct]').forEach(function (s) { s.onclick = function () { eaCtForm(d.conteudos.filter(function (c) { return c.id === s.getAttribute('data-ct'); })[0]); }; });
+  }
+  function eaCtForm(c) {
+    var d = EA.d;
+    $('ea-ct-form').innerHTML = '<div class="card" style="margin-bottom:12px"><h2>' + (c.id ? 'Editar conteúdo' : 'Novo conteúdo') + '</h2><div class="duas"><div>' +
+      '<label>Data</label><input type="date" id="ea-ct-data" value="' + esc(c.iso || '') + '" style="width:100%;border:1px solid var(--borda);border-radius:10px;padding:8px">' +
+      '<label>Rede</label>' + eaSel('ea-ct-rede', d.redes, c.rede) + eaIn('ea-ct-fmt', 'Formato', c.formato, 'Reels, carrossel, story, live...') + '<label>Situação</label>' + eaSel('ea-ct-sit', d.contSit, c.situacao) +
+      '</div><div>' + eaIn('ea-ct-tema', 'Tema', c.tema) + eaTa('ea-ct-ideia', 'Ideia, roteiro ou legenda', c.ideia) + '</div></div>' +
+      '<div class="botoes" style="margin-top:10px"><button class="btn salva" id="ea-ct-salvar">Salvar</button>' + (c.id ? '<button class="btn claro salva" id="ea-ct-tirar">Apagar</button>' : '') + '<button class="btn claro" id="ea-ct-fechar">Fechar</button></div><div id="ea-ct-msg"></div></div>';
+    if (d.soLeitura) document.querySelectorAll('#ea-ct-form .salva, #ea-ct-form input, #ea-ct-form textarea, #ea-ct-form select').forEach(function (x) { x.disabled = true; });
+    $('ea-ct-fechar').onclick = function () { $('ea-ct-form').innerHTML = ''; };
+    $('ea-ct-salvar').onclick = function () {
+      var b = this; b.disabled = true;
+      chamar('eaConteudoSalvar', [S.email, S.token, { id: c.id || '', data: eaV('ea-ct-data'), rede: eaV('ea-ct-rede'), formato: eaV('ea-ct-fmt'), situacao: eaV('ea-ct-sit'), tema: eaV('ea-ct-tema'), ideia: eaV('ea-ct-ideia') }], function (r) {
+        b.disabled = false; if (r.ok && eaV('ea-ct-data')) { var x = eaV('ea-ct-data').split('-'); EA.mes = new Date(+x[0], +x[1] - 1, 1); } eaRes('ea-ct-msg', r, 'Salvo.', function () { eaRecarregar('conteudos'); });
+      });
+    };
+    if ($('ea-ct-tirar')) $('ea-ct-tirar').onclick = function () { if (!confirm('Apagar este conteúdo do calendário?')) return; chamar('eaConteudoSalvar', [S.email, S.token, { id: c.id, remover: true }], function (r) { eaRes('ea-ct-msg', r, 'Apagado.', function () { eaRecarregar('conteudos'); }); }); };
+  }
+
+  function eaPedidos() {
+    var d = EA.d, m = d.membro;
+    var h = '<div class="duas"><div class="card"><h2>Análises gratuitas de ' + d.ano + '</h2><p class="ea-mini">Você tem 1 de cada tipo por ano. Depois disso, novos pedidos entram pela mentoria.' + (m.mentoria ? ' Sua mentoria está ativa: pode pedir mais.' : '') + '</p>' +
+      d.cota.map(function (c) { return '<div class="tarefa"><span class="bola ' + (c.usado ? '' : 's') + '"></span><div><b>' + esc(c.tipo) + '</b><small>' + (c.usado ? 'Já usada em ' + d.ano : 'Disponível') + '</small></div></div>'; }).join('') + '</div>' +
+      '<div class="card"><h2>Fazer um pedido</h2><label>Tipo</label><select id="ea-pd-tipo"><optgroup label="Análises">' + d.tiposGratis.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('') + '</optgroup><optgroup label="Pedir ajuda">' +
+      d.tiposAjuda.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('') + '</optgroup></select>' +
+      eaTa('ea-pd-desc', 'O que você precisa?', '', 'Conte a situação, o que já tentou e o que espera da análise ou da ajuda.') + eaIn('ea-pd-links', 'Links (perfil, site, planilha...) separados por espaço', '', 'https://...') +
+      '<button class="btn salva" id="ea-pd-env" style="margin-top:10px">Enviar pedido</button><div id="ea-pd-msg"></div></div></div>';
+    h += '<h2 style="margin-top:18px">Meus pedidos</h2>' + (d.pedidos.map(function (p) {
+      return '<div class="ea-cart"><h3>' + esc(p.tipo) + ' <span class="selo ' + (p.situacao === 'Respondido' ? 'ok' : (p.situacao === 'Encerrado' ? '' : 'alerta')) + '">' + esc(p.situacao) + '</span>' + (p.gratis === 'Sim' ? ' <span class="selo">gratuito do ano</span>' : '') + '</h3>' +
+        '<small>' + esc(p.id) + ' · ' + esc(p.em) + '</small><div class="ea-tx" style="margin-top:6px">' + eaLinks(p.desc) + '</div>' + (p.links ? '<div>' + eaLinks(p.links) + '</div>' : '') +
+        (p.resposta ? '<div class="cv-mural" style="margin-top:8px"><b>Resposta</b>' + (p.por ? ' <small class="ea-mini">' + esc(p.por) + (p.respondido ? ' · ' + esc(p.respondido) : '') + '</small>' : '') + '<div class="ea-tx">' + eaLinks(p.resposta) + '</div></div>' : '') + '</div>';
+    }).join('') || '<p class="vazio">Nenhum pedido ainda.</p>');
+    $('ea-corpo').innerHTML = h;
+    $('ea-pd-env').onclick = function () {
+      var b = this; b.disabled = true;
+      chamar('eaPedidoCriar', [S.email, S.token, { tipo: eaV('ea-pd-tipo'), descricao: eaV('ea-pd-desc'), links: eaV('ea-pd-links') }], function (r) { b.disabled = false; eaRes('ea-pd-msg', r, 'Pedido enviado (' + (r.id || '') + '). A equipe responde por aqui e você recebe um e-mail.', function () { eaRecarregar('pedidos'); }); });
+    };
+  }
+
+  function eaDiag() {
+    var d = EA.d;
+    $('ea-corpo').innerHTML = '<p class="vazio">Diagnósticos da mentoria com ideias para o seu negócio, áudios e tarefas. Marque cada tarefa quando fizer.</p>' + (d.diagnosticos.map(function (g) {
+      var f = g.tarefas.filter(function (t) { return t.feito; }).length;
+      return '<div class="ea-cart"><h3>' + esc(g.titulo) + ' <span class="selo ' + (g.situacao === 'Tarefas concluídas' ? 'ok' : 'alerta') + '">' + esc(g.situacao) + '</span></h3><small>' + esc(g.em) + ' · ' + esc(g.por) + '</small>' +
+        '<div class="ea-tx" style="margin-top:8px">' + eaLinks(g.texto) + '</div>' + (g.links ? '<p><b>Áudios e links</b><br>' + eaLinks(g.links).replace(/\s+/g, '<br>') + '</p>' : '') +
+        (g.tarefas.length ? '<b>Tarefas (' + f + ' de ' + g.tarefas.length + ')</b><div class="ea-barra"><i style="width:' + Math.round(100 * f / g.tarefas.length) + '%"></i></div>' + g.tarefas.map(function (t, i) {
+          return '<div class="tarefa"><input type="checkbox" class="ea-tf" data-g="' + esc(g.id) + '" data-i="' + i + '"' + (t.feito ? ' checked' : '') + '><div>' + esc(t.t) + (t.em ? '<small>feita em ' + esc(t.em) + '</small>' : '') + '</div></div>';
+        }).join('') : '') + '</div>';
+    }).join('') || '<p class="vazio">Você ainda não recebeu diagnósticos.</p>');
+    document.querySelectorAll('.ea-tf').forEach(function (c) { c.onchange = function () {
+      if (EA.d.soLeitura) return;
+      chamar('eaTarefaFeita', [S.email, S.token, c.getAttribute('data-g'), +c.getAttribute('data-i'), c.checked], function (r) { if (!r.ok) { alert(r.erro); c.checked = !c.checked; } else eaRecarregar('diag'); });
+    }; });
+  }
+
+  function eaExchange() {
+    var d = EA.d;
+    var h = '<p class="vazio">Troca de produtos, serviços e conhecimentos entre as empreendedoras do Clube, sem cobrança por troca. Combine sempre por escrito o escopo, o prazo e as entregas.</p>' +
+      '<div class="duas"><div class="card"><h2>Publicar</h2><label>Tipo</label>' + eaSel('ea-ex-tipo', ['Ofereço', 'Procuro'], 'Ofereço') + eaIn('ea-ex-tit', 'Título', '', 'Ex.: Fotografia de produto / Procuro revisão de textos') +
+      eaTa('ea-ex-desc', 'Descrição', '', 'O que inclui, limites, prazo e o que você aceita em troca.') + '<button class="btn salva" id="ea-ex-pub" style="margin-top:10px">Publicar</button><div id="ea-ex-msg"></div></div>' +
+      '<div class="card"><h2>Minhas trocas</h2>' + (d.acordos.map(function (a) {
+        return '<div class="ea-cart"><b>' + esc(a.oferta) + '</b> <span class="selo ' + (a.situacao === 'Aceita' || a.situacao === 'Concluída' ? 'ok' : (a.situacao === 'Recusada' ? 'ruim' : 'alerta')) + '">' + esc(a.situacao) + '</span><br><small>' + (a.enviei ? 'Você propôs para ' : 'Proposta de ') + esc(a.com) + ' · ' + esc(a.em) + '</small>' +
+          '<div class="ea-tx">' + esc(a.msg) + '</div>' + (a.contato ? '<small>Contato: ' + esc(a.contato) + '</small>' : '') + '<div class="botoes" style="margin:6px 0 0">' +
+          (!a.enviei && a.situacao === 'Proposta' ? '<button class="btn pq salva" data-ac="aceitar" data-id="' + esc(a.id) + '">Aceitar</button><button class="btn pq claro salva" data-ac="recusar" data-id="' + esc(a.id) + '">Recusar</button>' : '') +
+          (a.situacao === 'Aceita' ? '<button class="btn pq salva" data-ac="concluir" data-id="' + esc(a.id) + '">Marcar como concluída</button>' : '') + '</div></div>';
+      }).join('') || '<p class="vazio">Nenhuma troca ainda.</p>') + '</div></div>';
+    h += '<h2 style="margin-top:18px">Ofertas e procuras do Clube</h2>' + (d.exchange.map(function (x) {
+      return '<div class="ea-cart"><h3><span class="selo">' + esc(x.tipo) + '</span> ' + esc(x.titulo) + '</h3><small>' + esc(x.nome) + ' · ' + esc(x.em) + '</small><div class="ea-tx" style="margin:6px 0">' + esc(x.desc) + '</div>' +
+        (x.minha ? '<button class="btn pq claro salva" data-exfim="' + esc(x.id) + '">Encerrar minha publicação</button>' : '<button class="btn pq salva" data-exprop="' + esc(x.id) + '">Propor troca</button><div id="ea-prop-' + esc(x.id) + '"></div>') + '</div>';
+    }).join('') || '<p class="vazio">Ainda não há publicações.</p>');
+    $('ea-corpo').innerHTML = h;
+    $('ea-ex-pub').onclick = function () {
+      var b = this; b.disabled = true;
+      chamar('eaExchangeSalvar', [S.email, S.token, { tipo: eaV('ea-ex-tipo'), titulo: eaV('ea-ex-tit'), descricao: eaV('ea-ex-desc') }], function (r) { b.disabled = false; eaRes('ea-ex-msg', r, 'Publicado.', function () { eaRecarregar('exchange'); }); });
+    };
+    document.querySelectorAll('[data-exfim]').forEach(function (b) { b.onclick = function () { if (!confirm('Encerrar esta publicação?')) return; chamar('eaExchangeSalvar', [S.email, S.token, { id: b.getAttribute('data-exfim'), encerrar: true }], function (r) { if (!r.ok) alert(r.erro); eaRecarregar('exchange'); }); }; });
+    document.querySelectorAll('[data-exprop]').forEach(function (b) { b.onclick = function () {
+      var id = b.getAttribute('data-exprop'), box = $('ea-prop-' + id);
+      box.innerHTML = '<textarea id="ea-pm-' + id + '" placeholder="O que você oferece em troca e como imagina a troca"></textarea><button class="btn pq" id="ea-pe-' + id + '">Enviar proposta</button><div id="ea-pr-' + id + '"></div>';
+      $('ea-pe-' + id).onclick = function () { var bb = this; bb.disabled = true; chamar('eaAcordo', [S.email, S.token, 'propor', id, eaV('ea-pm-' + id)], function (r) { bb.disabled = false; eaRes('ea-pr-' + id, r, 'Proposta enviada.', function () { eaRecarregar('exchange'); }); }); };
+    }; });
+    document.querySelectorAll('[data-ac]').forEach(function (b) { b.onclick = function () { b.disabled = true; chamar('eaAcordo', [S.email, S.token, b.getAttribute('data-ac'), b.getAttribute('data-id'), ''], function (r) { if (!r.ok) alert(r.erro); eaRecarregar('exchange'); }); }; });
+  }
+  function eaMural() { $('ea-corpo').innerHTML = EA.d.mural.map(eaAvisoHtml).join('') || '<p class="vazio">Nenhum aviso no momento.</p>'; }
+
+  
+  function eaGestaoTela(el) {
+    EA.el = el; EA.alvo = '';
+    $(el).innerHTML = '<p class="carregando">Carregando o Clube EA...</p>';
+    chamar('eaGestao', [S.email, S.token], function (r) {
+      if (!r.ok) { $(el).innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      EA.g = r; eaGDesenhar();
+    });
+  }
+  function eaGDesenhar() {
+    var g = EA.g, ab = [['membros', 'Empreendedoras'], ['pagamentos', 'Pagamentos'], ['materiais', 'Trilha e materiais'], ['pedidos', 'Pedidos (' + g.pedidos.filter(function (p) { return p.situacao === 'Recebido' || p.situacao === 'Em análise'; }).length + ')'],
+      ['diag', 'Diagnósticos'], ['exchange', 'Exchange'], ['mural', 'Mural do Clube']];
+    var at = g.membros.filter(function (m) { return m.situacao === 'Ativa'; }).length;
+    var h = '<div class="nums"><div class="num"><b>' + at + '</b><span>empreendedoras ativas</span></div><div class="num"><b>' + g.membros.filter(function (m) { return m.situacao === 'Ativa' && m.dias != null && m.dias <= 7; }).length + '</b><span>vencem em até 7 dias</span></div>' +
+      '<div class="num"><b>' + g.membros.filter(function (m) { return m.situacao === 'Vencida'; }).length + '</b><span>vencidas</span></div><div class="num"><b>' + g.materiais.filter(function (m) { return m.publicado; }).length + '</b><span>materiais na trilha</span></div></div>' +
+      '<div class="botoes">' + ab.map(function (a) { return '<button class="btn pq ' + (a[0] === EA.gaba ? '' : 'claro') + '" data-eag="' + a[0] + '">' + a[1] + '</button>'; }).join('') + '</div><div id="eag-corpo"></div>';
+    $(EA.el).innerHTML = h;
+    document.querySelectorAll('[data-eag]').forEach(function (b) { b.onclick = function () { EA.gaba = b.getAttribute('data-eag'); eaGDesenhar(); }; });
+    ({ membros: eaGMembros, pagamentos: eaGPag, materiais: eaGMat, pedidos: eaGPedidos, diag: eaGDiag, exchange: eaGEx, mural: eaGMural })[EA.gaba]();
+  }
+  function eaGRecarregar() { eaGestaoTela(EA.el); }
+  function eaGMembros() {
+    var g = EA.g;
+    var h = '<div class="botoes"><button class="btn" id="eag-novo">Cadastrar ou ajustar empreendedora</button><input type="text" id="eag-busca" placeholder="Buscar por nome, negócio ou e-mail" style="max-width:320px"></div><div id="eag-form"></div>' +
+      '<div class="tab-wrap"><table><thead><tr><th>Empreendedora</th><th>Assinatura</th><th>Trilha</th><th>Planos</th><th>Conteúdos</th><th>Pedidos</th><th>Diagnósticos</th><th>Exchange</th><th></th></tr></thead><tbody id="eag-tb"></tbody></table></div>';
+    $('eag-corpo').innerHTML = h;
+    var desenha = function () {
+      var q = eaV('eag-busca').toLowerCase();
+      $('eag-tb').innerHTML = g.membros.filter(function (m) { return !q || (m.nome + ' ' + m.negocio + ' ' + m.email).toLowerCase().indexOf(q) >= 0; }).map(function (m) {
+        return '<tr><td><b>' + esc(m.nome) + '</b><br><small>' + esc(m.negocio || '-') + (m.mat ? ' · ' + esc(m.mat) : '') + '<br>' + esc(m.email) + '</small>' + (m.instagram ? '<br><small>' + esc(m.instagram) + '</small>' : '') + '</td>' +
+          '<td><span class="selo ' + (m.situacao === 'Ativa' ? (m.dias <= 7 ? 'alerta' : 'ok') : 'ruim') + '">' + esc(m.situacao) + '</span><br><small>' + esc(m.modalidade) + ' até ' + esc(m.ate) + '<br>' + esc(m.origem) + (m.mentoria ? '<br>Mentoria até ' + esc(m.mentoria) : '') + '</small></td>' +
+          '<td>' + m.trilha + '%<div class="ea-barra"><i style="width:' + m.trilha + '%"></i></div></td><td>' + esc(m.planos || '-') + '</td><td>' + m.conteudos + '</td><td>' + m.pedidos + (m.abertos ? ' <span class="selo alerta">' + m.abertos + ' aberto(s)</span>' : '') + '</td>' +
+          '<td>' + m.diagnosticos + '</td><td>' + m.exchange + '</td><td><button class="btn pq claro" data-ver="' + esc(m.email) + '">Ver área</button> <button class="btn pq claro" data-aj="' + esc(m.email) + '">Ajustar</button></td></tr>';
+      }).join('') || '<tr><td colspan="9" class="vazio">Nenhuma empreendedora cadastrada ainda. Quem paga pelo site entra sozinha; você também pode cadastrar aqui.</td></tr>';
+      document.querySelectorAll('[data-ver]').forEach(function (b) { b.onclick = function () { EA.aba = 'inicio'; eaTela(b.getAttribute('data-ver'), EA.el); }; });
+      document.querySelectorAll('[data-aj]').forEach(function (b) { b.onclick = function () { eaGForm(g.membros.filter(function (m) { return m.email === b.getAttribute('data-aj'); })[0]); }; });
+    };
+    $('eag-busca').oninput = desenha; desenha();
+    $('eag-novo').onclick = function () { eaGForm(null); };
+  }
+  function eaIso(br) { var m = /^(\d{2})\/(\d{2})\/(\d{4})/.exec(br || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; }
+  function eaGForm(m) {
+    var g = EA.g; m = m || {};
+    $('eag-form').innerHTML = '<div class="card" style="margin-bottom:14px"><h2>' + (m.email ? 'Ajustar ' + esc(m.nome) : 'Cadastrar empreendedora') + '</h2><div class="duas"><div>' +
+      '<label>E-mail (o mesmo do pagamento)</label><input type="email" id="eag-em" value="' + esc(m.email || '') + '"' + (m.email ? ' readonly' : '') + '>' + eaIn('eag-nome', 'Nome', m.nome) +
+      '<label>Modalidade</label>' + eaSel('eag-mod', g.modalidades, m.modalidade || 'Mensal') + '</div><div>' +
+      '<label>Assinatura válida até</label><input type="date" id="eag-ate" value="' + esc(eaIso(m.ate)) + '" style="width:100%;border:1px solid var(--borda);border-radius:10px;padding:8px">' +
+      '<label>Mentoria ativa até (deixe vazio se não tiver)</label><input type="date" id="eag-ment" value="' + esc(eaIso(m.mentoriaAte)) + '" style="width:100%;border:1px solid var(--borda);border-radius:10px;padding:8px">' +
+      '<label>Situação</label>' + eaSel('eag-sit', ['Ativa', 'Cancelada'], m.situacao === 'Cancelada' ? 'Cancelada' : 'Ativa') + '</div></div>' + eaTa('eag-obs', 'Observação interna', m.obs) +
+      '<div class="botoes" style="margin-top:10px"><button class="btn" id="eag-salvar">Salvar</button><button class="btn claro" id="eag-fechar">Fechar</button></div><div id="eag-msg"></div>' +
+      (m.email ? '' : '<p class="ea-mini">Ao cadastrar, ela recebe um e-mail de boas-vindas com o passo a passo para entrar.</p>') + '</div>';
+    $('eag-fechar').onclick = function () { $('eag-form').innerHTML = ''; };
+    $('eag-salvar').onclick = function () {
+      var b = this; b.disabled = true;
+      chamar('eaMembroSalvar', [S.email, S.token, { email: eaV('eag-em'), nome: eaV('eag-nome'), modalidade: eaV('eag-mod'), ate: eaV('eag-ate'), mentoria: eaV('eag-ment'), situacao: eaV('eag-sit'), obs: eaV('eag-obs') }], function (r) { b.disabled = false; eaRes('eag-msg', r, 'Salvo.', eaGRecarregar); });
+    };
+  }
+  function eaGPag() {
+    var g = EA.g;
+    $('eag-corpo').innerHTML = '<p class="vazio">Pagamentos que chegam pelos links do site. O MAP OS confere de hora em hora e libera o acesso sozinho (mensal: 31 dias, semestral: 183, anual: 366). Quem tenta entrar com o e-mail do pagamento também é conferida na hora.</p>' +
+      '<div class="botoes"><button class="btn" id="eag-sinc">Conferir pagamentos agora</button></div><div id="eag-sinc-msg"></div>' +
+      '<div class="tab-wrap"><table><thead><tr><th>Data</th><th>Plano</th><th>Valor</th><th>Status</th><th>Nome / e-mail</th><th>MAP OS</th></tr></thead><tbody>' +
+      (g.entradas.map(function (e) { return '<tr><td>' + esc(e.data) + '</td><td>' + esc(e.tipo) + '</td><td>' + esc(e.valor) + '</td><td>' + esc(e.status) + '</td><td>' + esc(e.nome) + '<br><small>' + esc(e.email) + '</small></td><td><small>' + esc(e.obs) + '</small></td></tr>'; }).join('') ||
+        '<tr><td colspan="6" class="vazio">Nenhum pagamento registrado ainda.</td></tr>') + '</tbody></table></div>';
+    $('eag-sinc').onclick = function () { var b = this; b.disabled = true; chamar('eaSincAgora', [S.email, S.token], function (r) { b.disabled = false; eaRes('eag-sinc-msg', r, (r.n || 0) + ' pagamento(s) novo(s) liberado(s).', r.n ? eaGRecarregar : null); }); };
+  }
+  function eaGMat() {
+    var g = EA.g;
+    var h = (g.gestao ? '<div class="botoes"><button class="btn" id="eag-mnovo">Novo material</button></div><div id="eag-mform"></div>' : '<p class="vazio">Só a coordenação e a Gestão Geral publicam materiais.</p>');
+    g.areas.forEach(function (a) {
+      var l = g.materiais.filter(function (x) { return x.area === a; }); if (!l.length) return;
+      h += '<h2 style="margin-top:14px">' + esc(a) + '</h2>' + l.map(function (x) {
+        return '<div class="ea-cart"><b>' + eaIcone(x.tipo) + ' <a target="_blank" rel="noopener" href="' + esc(x.link) + '">' + esc(x.titulo) + '</a></b> ' + (x.publicado ? '' : '<span class="selo ruim">fora da trilha</span>') +
+          '<br><small>' + esc(x.tipo) + ' · ' + esc(x.programa) + ' · ordem ' + x.ordem + ' · ' + esc(x.por) + ' ' + esc(x.em) + '</small>' + (g.gestao ? ' <button class="btn pq claro" data-med="' + esc(x.id) + '">Editar</button>' : '') + '</div>';
+      }).join('');
+    });
+    if (!g.materiais.length) h += '<p class="vazio">Nenhum material ainda. Comece pela área "Comece por aqui" (boas-vindas e como usar o Clube).</p>';
+    $('eag-corpo').innerHTML = h;
+    if ($('eag-mnovo')) $('eag-mnovo').onclick = function () { eaGMatForm({}); };
+    document.querySelectorAll('[data-med]').forEach(function (b) { b.onclick = function () { eaGMatForm(g.materiais.filter(function (x) { return x.id === b.getAttribute('data-med'); })[0]); window.scrollTo(0, 0); }; });
+  }
+  function eaGMatForm(x) {
+    var g = EA.g;
+    $('eag-mform').innerHTML = '<div class="card" style="margin-bottom:14px"><h2>' + (x.id ? 'Editar material' : 'Novo material') + '</h2><div class="duas"><div>' +
+      '<label>Área da trilha</label>' + eaSel('eag-ma', g.areas, x.area) + '<label>Programa</label>' + eaSel('eag-mp', g.programas, x.programa) + eaIn('eag-mt', 'Título', x.titulo) +
+      '<label>Tipo</label>' + eaSel('eag-mtp', ['Vídeo', 'Áudio', 'PDF', 'Link', 'Documento'], x.tipo || 'Vídeo') + eaIn('eag-mo', 'Ordem na área (1, 2, 3...)', x.ordem || '') + '</div><div>' +
+      eaIn('eag-ml', 'Link (YouTube, Drive, Spotify, página...)', x.link, 'https://') + '<label>Ou envie um arquivo (PDF, áudio, imagem, até 10 MB)</label><input type="file" id="eag-mf">' +
+      eaTa('eag-md', 'Descrição ou orientação', x.desc) + '<label style="font-weight:normal"><input type="checkbox" id="eag-mpub"' + (x.id && !x.publicado ? '' : ' checked') + '> Mostrar na trilha das empreendedoras</label></div></div>' +
+      '<div class="botoes" style="margin-top:10px"><button class="btn" id="eag-msalvar">Salvar</button>' + (x.id ? '<button class="btn claro" id="eag-mtirar">Tirar da trilha</button>' : '') + '<button class="btn claro" id="eag-mfechar">Fechar</button></div><div id="eag-mmsg"></div></div>';
+    $('eag-mfechar').onclick = function () { $('eag-mform').innerHTML = ''; };
+    var envia = function (arq) {
+      chamar('eaMaterialSalvar', [S.email, S.token, { id: x.id || '', area: eaV('eag-ma'), programa: eaV('eag-mp'), titulo: eaV('eag-mt'), tipo: eaV('eag-mtp'), ordem: eaV('eag-mo'), link: eaV('eag-ml'), descricao: eaV('eag-md'), publicado: $('eag-mpub').checked, arquivo: arq }], function (r) {
+        $('eag-msalvar').disabled = false; eaRes('eag-mmsg', r, 'Material salvo.', eaGRecarregar);
+      });
+    };
+    $('eag-msalvar').onclick = function () {
+      this.disabled = true; var f = $('eag-mf').files[0];
+      if (!f) return envia(null);
+      if (f.size > 10 * 1024 * 1024) { this.disabled = false; return aviso($('eag-mmsg'), 'erro', 'Arquivo maior que 10 MB. Use um link.'); }
+      aviso($('eag-mmsg'), 'ok', 'Enviando o arquivo...');
+      var rd = new FileReader(); rd.onload = function () { envia({ nome: f.name, tipo: f.type, dados: String(rd.result).split(',')[1] }); }; rd.readAsDataURL(f);
+    };
+    if ($('eag-mtirar')) $('eag-mtirar').onclick = function () { chamar('eaMaterialSalvar', [S.email, S.token, { id: x.id, remover: true }], function (r) { eaRes('eag-mmsg', r, 'Tirado da trilha.', eaGRecarregar); }); };
+  }
+  function eaGPedidos() {
+    var g = EA.g, ab = g.pedidos.filter(function (p) { return p.situacao === 'Recebido' || p.situacao === 'Em análise'; }), fe = g.pedidos.filter(function (p) { return ab.indexOf(p) < 0; });
+    var c = function (p) {
+      return '<div class="ea-cart"><h3>' + esc(p.tipo) + ' · ' + esc(p.nome) + ' <span class="selo ' + (p.situacao === 'Respondido' ? 'ok' : 'alerta') + '">' + esc(p.situacao) + '</span>' + (p.gratis === 'Sim' ? ' <span class="selo">gratuito do ano</span>' : (p.gratis === 'Mentoria' ? ' <span class="selo">mentoria</span>' : '')) + '</h3>' +
+        '<small>' + esc(p.id) + ' · ' + esc(p.em) + ' · ' + esc(p.email) + '</small><div class="ea-tx" style="margin:6px 0">' + eaLinks(p.desc) + '</div>' + (p.links ? '<div>' + eaLinks(p.links) + '</div>' : '') +
+        '<textarea id="eag-pr-' + esc(p.id) + '" placeholder="Resposta para a empreendedora (pode ter links de áudio ou vídeo)">' + esc(p.resposta) + '</textarea><div class="botoes" style="margin:6px 0 0">' +
+        '<select id="eag-ps-' + esc(p.id) + '" style="max-width:180px">' + g.pedSit.map(function (s) { return '<option' + (s === (p.situacao === 'Recebido' ? 'Respondido' : p.situacao) ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select>' +
+        '<button class="btn pq" data-pr="' + esc(p.id) + '">Salvar</button><button class="btn pq claro" data-pver="' + esc(p.email) + '">Ver área dela</button></div><div id="eag-pm-' + esc(p.id) + '"></div></div>';
+    };
+    $('eag-corpo').innerHTML = '<h2>Em aberto (' + ab.length + ')</h2>' + (ab.map(c).join('') || '<p class="vazio">Nenhum pedido em aberto.</p>') + (fe.length ? '<details class="pend"><summary>Respondidos e encerrados (' + fe.length + ')</summary>' + fe.map(c).join('') + '</details>' : '');
+    document.querySelectorAll('[data-pr]').forEach(function (b) { b.onclick = function () {
+      var id = b.getAttribute('data-pr'); b.disabled = true;
+      chamar('eaPedidoResponder', [S.email, S.token, id, { situacao: eaV('eag-ps-' + id), resposta: eaV('eag-pr-' + id) }], function (r) { b.disabled = false; eaRes('eag-pm-' + id, r, 'Salvo. Ela recebe um aviso por e-mail quando está Respondido.', eaGRecarregar); });
+    }; });
+    document.querySelectorAll('[data-pver]').forEach(function (b) { b.onclick = function () { EA.aba = 'pedidos'; eaTela(b.getAttribute('data-pver'), EA.el); }; });
+  }
+  function eaGDiag() {
+    var g = EA.g;
+    var h = g.gestao ? '<div class="card" style="margin-bottom:14px"><h2>Enviar diagnóstico</h2><label>Empreendedora</label><select id="eag-de"><option value="">Escolha</option>' +
+      g.membros.filter(function (m) { return m.situacao === 'Ativa'; }).map(function (m) { return '<option value="' + esc(m.email) + '">' + esc(m.nome + (m.negocio ? ' · ' + m.negocio : '')) + '</option>'; }).join('') + '</select>' +
+      eaIn('eag-dt', 'Título', '', 'Ex.: Diagnóstico do Instagram - novembro') + eaTa('eag-dx', 'Diagnóstico e ideias de solução', '') + eaTa('eag-dl', 'Links de áudios, aulas e dicas (um por linha)', '', 'https://...') +
+      eaTa('eag-dtar', 'Tarefas para ela (uma por linha)', '', 'Ex.: Refazer a bio com o que você vende e para quem') + '<button class="btn" id="eag-denv" style="margin-top:10px">Enviar</button><div id="eag-dmsg"></div></div>' : '';
+    h += '<h2>Enviados</h2>' + (g.diagnosticos.map(function (d) {
+      var f = d.tarefas.filter(function (t) { return t.feito; }).length, m = g.membros.filter(function (x) { return x.email === d.email; })[0];
+      return '<div class="ea-cart"><h3>' + esc(d.titulo) + ' · ' + esc(m ? m.nome : d.email) + ' <span class="selo ' + (d.situacao === 'Tarefas concluídas' ? 'ok' : 'alerta') + '">' + esc(d.situacao) + '</span></h3><small>' + esc(d.em) + ' · ' + esc(d.por) + ' · tarefas ' + f + '/' + d.tarefas.length + '</small></div>';
+    }).join('') || '<p class="vazio">Nenhum diagnóstico enviado ainda.</p>');
+    $('eag-corpo').innerHTML = h;
+    if ($('eag-denv')) $('eag-denv').onclick = function () {
+      var b = this; b.disabled = true;
+      chamar('eaDiagnosticoEnviar', [S.email, S.token, { email: eaV('eag-de'), titulo: eaV('eag-dt'), texto: eaV('eag-dx'), links: eaV('eag-dl').replace(/\n/g, ' '), tarefas: eaV('eag-dtar') }], function (r) { b.disabled = false; eaRes('eag-dmsg', r, 'Diagnóstico enviado.', eaGRecarregar); });
+    };
+  }
+  function eaGEx() {
+    var g = EA.g;
+    $('eag-corpo').innerHTML = '<p class="vazio">Publicações do Exchange. A equipe pode tirar do ar o que não seguir as regras do Clube.</p>' + (g.exchange.map(function (x) {
+      return '<div class="ea-cart"><h3><span class="selo">' + esc(x.tipo) + '</span> ' + esc(x.titulo) + ' <span class="selo ' + (x.situacao === 'Ativa' ? 'ok' : '') + '">' + esc(x.situacao) + '</span></h3><small>' + esc(x.nome) + ' · ' + esc(x.em) + '</small><div class="ea-tx">' + esc(x.desc) + '</div>' +
+        (g.gestao && x.situacao === 'Ativa' ? '<button class="btn pq claro" data-exm="' + esc(x.id) + '">Tirar do ar</button>' : '') + '</div>';
+    }).join('') || '<p class="vazio">Nenhuma publicação ainda.</p>');
+    document.querySelectorAll('[data-exm]').forEach(function (b) { b.onclick = function () { if (!confirm('Tirar esta publicação do ar?')) return; chamar('eaExchangeModerar', [S.email, S.token, b.getAttribute('data-exm')], function (r) { if (!r.ok) alert(r.erro); eaGRecarregar(); }); }; });
+  }
+  function eaGMural() {
+    var g = EA.g;
+    var h = g.gestao ? '<div class="card" style="margin-bottom:14px"><h2>Novo aviso para as empreendedoras</h2>' + eaIn('eag-mut', 'Título', '') + eaTa('eag-mux', 'Texto', '') + eaIn('eag-mul', 'Link (opcional)', '', 'https://') +
+      '<button class="btn" id="eag-mupub" style="margin-top:10px">Publicar</button><div id="eag-mumsg"></div></div>' : '';
+    h += g.mural.map(function (a) { return '<div class="ea-cart"><b>' + esc(a.titulo) + '</b> ' + (a.ativo ? '<span class="selo ok">no mural</span>' : '<span class="selo">fora</span>') + '<br><small>' + esc(a.em) + ' · ' + esc(a.por) + '</small><div class="ea-tx">' + eaLinks(a.texto) + '</div>' +
+      (g.gestao ? '<button class="btn pq claro" data-mu="' + esc(a.id) + '" data-at="' + (a.ativo ? '0' : '1') + '">' + (a.ativo ? 'Tirar do mural' : 'Voltar ao mural') + '</button>' : '') + '</div>'; }).join('') || '<p class="vazio">Nenhum aviso ainda.</p>';
+    $('eag-corpo').innerHTML = h;
+    if ($('eag-mupub')) $('eag-mupub').onclick = function () { var b = this; b.disabled = true; chamar('eaMuralSalvar', [S.email, S.token, { titulo: eaV('eag-mut'), texto: eaV('eag-mux'), link: eaV('eag-mul') }], function (r) { b.disabled = false; eaRes('eag-mumsg', r, 'Publicado.', eaGRecarregar); }); };
+    document.querySelectorAll('[data-mu]').forEach(function (b) { b.onclick = function () { chamar('eaMuralSalvar', [S.email, S.token, { id: b.getAttribute('data-mu'), ativo: b.getAttribute('data-at') === '1' }], function (r) { if (!r.ok) alert(r.erro); eaGRecarregar(); }); }; });
   }
 </script>
 
