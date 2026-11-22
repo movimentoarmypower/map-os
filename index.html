@@ -102,7 +102,7 @@
   <div class="modal" id="modal"><div class="caixa" id="modal-corpo"></div></div>
 
 <script>
-  var MODULOS = [{"id":"porta-jod","nome":"Porta JOD — Porta de Entrada","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Quem entra no MAP, curadoria das entradas, grupos de Estado, tarefas e relatório semanal da equipe JOD.","url":"https://movimentoarmypower.github.io/porta-de-entrada/"},{"id":"rh-sam","nome":"RH e SAM","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Pessoas, voluntariado, atendimento e encaminhamentos: matrículas, pendências, trilhas e relatórios da equipe.","url":"https://movimentoarmypower.github.io/porta-de-entrada/?pagina=vagas"},{"id":"gestao-geral","nome":"Gestão Geral","descricao":"Visão institucional, prioridades, decisões e acompanhamento geral.","categoria":"Governança","status":"Em preparação","url":""},{"id":"conselho","nome":"Conselho","descricao":"Acompanhamento institucional e registros de governança.","categoria":"Governança","status":"Em preparação","url":""},{"id":"marketing","nome":"Marketing e Comunicação","descricao":"Campanhas, conteúdo, comunicação e suporte aos projetos.","categoria":"Setores transversais","status":"Em preparação","url":""},{"id":"juridico","nome":"Jurídico","descricao":"Demandas jurídicas, documentos e acompanhamento de processos.","categoria":"Setores transversais","status":"Em preparação","url":""},{"id":"painel-equipe","nome":"Painel da equipe","painel":true,"categoria":"Acompanhamento","status":"Conectado","descricao":"Quem enviou o relatório semanal, quem fez as tarefas, quem entrou no sistema e quem precisa de ajuda.","url":""},{"id":"tarefas","nome":"Tarefas e Atividades","descricao":"Demandas, responsáveis, prazos, entregas e pendências.","categoria":"Acompanhamento","status":"Planejado","url":""},{"id":"health-army","nome":"Health Army","area":true,"descricao":"Pacientes, sessões, profissionais e contratos, tarefas e relatórios das equipes do Health Army.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"sos-armys","nome":"SOS Armys","area":true,"descricao":"Pedidos de ajuda, curadoria do Acolhe Army, documentos, encaminhamentos, atendimentos e Fundo Emergencial.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"jus-voz","nome":"Sua Voz Importa · Área Técnica","area":true,"descricao":"Mobilização MAP + JusArmy: credenciamento de especialistas, termo de sigilo, demandas técnicas, laudos e dossiê.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"agromap","nome":"AgroMAP","descricao":"Acesso ao portal de gestão do AgroMAP.","categoria":"Frentes e projetos","status":"Em preparação","url":""},{"id":"army-world","nome":"Army World","descricao":"Acesso aos sistemas e às atividades do Army World.","categoria":"Frentes e projetos","status":"Em preparação","url":""},{"id":"suporte","nome":"Ajuda e Suporte","descricao":"Orientações e solicitações de ajuda para o MAP OS.","categoria":"Apoio","status":"Em preparação","url":""}];
+  var MODULOS = [{"id":"porta-jod","nome":"Porta JOD — Porta de Entrada","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Quem entra no MAP, curadoria das entradas, grupos de Estado, tarefas e relatório semanal da equipe JOD.","url":"https://movimentoarmypower.github.io/porta-de-entrada/"},{"id":"rh-sam","nome":"RH e SAM","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Pessoas, voluntariado, atendimento e encaminhamentos: matrículas, pendências, trilhas e relatórios da equipe.","url":"https://movimentoarmypower.github.io/porta-de-entrada/?pagina=vagas"},{"id":"gestao-geral","nome":"Gestão Geral","descricao":"Visão institucional, prioridades, decisões e acompanhamento geral.","categoria":"Governança","status":"Em preparação","url":""},{"id":"conselho","nome":"Conselho","descricao":"Acompanhamento institucional e registros de governança.","categoria":"Governança","status":"Em preparação","url":""},{"id":"marketing","nome":"Marketing e Comunicação","descricao":"Campanhas, conteúdo, comunicação e suporte aos projetos.","categoria":"Setores transversais","status":"Em preparação","url":""},{"id":"financeiro","nome":"Financeiro & Contábil","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Entradas e saídas com comprovante, conferência, orçamento por projeto, relatório mensal para a contabilidade e painel de impacto.","url":""},{"id":"juridico","nome":"Jurídico","descricao":"Demandas jurídicas, documentos e acompanhamento de processos.","categoria":"Setores transversais","status":"Em preparação","url":""},{"id":"painel-equipe","nome":"Painel da equipe","painel":true,"categoria":"Acompanhamento","status":"Conectado","descricao":"Quem enviou o relatório semanal, quem fez as tarefas, quem entrou no sistema e quem precisa de ajuda.","url":""},{"id":"tarefas","nome":"Tarefas e Atividades","descricao":"Demandas, responsáveis, prazos, entregas e pendências.","categoria":"Acompanhamento","status":"Planejado","url":""},{"id":"health-army","nome":"Health Army","area":true,"descricao":"Pacientes, sessões, profissionais e contratos, tarefas e relatórios das equipes do Health Army.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"sos-armys","nome":"SOS Armys","area":true,"descricao":"Pedidos de ajuda, curadoria do Acolhe Army, documentos, encaminhamentos, atendimentos e Fundo Emergencial.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"jus-voz","nome":"Sua Voz Importa · Área Técnica","area":true,"descricao":"Mobilização MAP + JusArmy: credenciamento de especialistas, termo de sigilo, demandas técnicas, laudos e dossiê.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"agromap","nome":"AgroMAP","descricao":"Acesso ao portal de gestão do AgroMAP.","categoria":"Frentes e projetos","status":"Em preparação","url":""},{"id":"army-world","nome":"Army World","descricao":"Acesso aos sistemas e às atividades do Army World.","categoria":"Frentes e projetos","status":"Em preparação","url":""},{"id":"suporte","nome":"Ajuda e Suporte","descricao":"Orientações e solicitações de ajuda para o MAP OS.","categoria":"Apoio","status":"Em preparação","url":""}];
   var S = { email: '', token: '', dados: null, area: null };
   var $ = function (id) { return document.getElementById(id); };
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -184,6 +184,7 @@
     if (v === 'area:trilha') return onbMinhaTela();
     if (v === 'area:cobrar-trilha') return onbCobrancaTela();
     if (v === 'area:validar-equipe') return vldTela();
+    if (v === 'area:financeiro') return finTela('');
     if (v === 'area:minha-semana') return telaMinhaSemana('');
     if (v.indexOf('area:') === 0) return telaArea(v.slice(5));
     if (v === 'painel') return telaPainel();
@@ -3797,6 +3798,101 @@
       '<div id="ms-corpo"></div>';
     document.querySelectorAll('[data-msa]').forEach(function (b) { b.onclick = function () { telaMinhaSemana(b.getAttribute('data-msa')); }; });
     EQ.aba = ''; eqdTela(atual, 'ms-corpo');
+  }
+</script>
+<script>
+  /* ===== Financeiro & Contábil — versão 1.0 (21/11/2026) ===== */
+  var FN = { d: null, aba: 'lancar', mes: '', imp: null };
+  function fnR(n) { return 'R$ ' + (Number(n) || 0).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function finTela(mes) {
+    $('conteudo').innerHTML = '<p class="carregando">Carregando o Financeiro...</p>';
+    chamar('finDados', [S.email, S.token, mes || FN.mes || ''], function (r) {
+      if (!r.ok) { $('conteudo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      FN.d = r; FN.mes = r.mes; if (r.perfil === 'contador' && FN.aba === 'lancar') FN.aba = 'mes'; finDesenhar();
+    });
+  }
+  function finDesenhar(msg) {
+    var d = FN.d, edita = d.perfil !== 'contador';
+    var abas = (edita ? [['lancar', 'Lançar']] : []).concat([['lista', 'Lançamentos do mês'], ['mes', 'Relatório do mês'], ['orc', 'Orçamento'], ['contador', 'Para a contabilidade'], ['impacto', 'Painel de impacto']]);
+    var h = '<h1>Financeiro &amp; Contábil</h1><p class="sub-tit">Entradas, saídas, comprovantes, orçamento e relatórios do MAP · Perfil: ' + esc({ gestao: 'Gestão Geral', financeiro: 'Financeiro', contador: 'Contador (consulta)' }[d.perfil]) + '</p>' +
+      '<div class="botoes"><label style="margin:0 6px 0 0">Mês</label><select id="fn-mes" style="max-width:150px">' + d.meses.map(function (m) { return '<option' + (m === d.mes ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select>' +
+      (d.links.planilha ? ' <a class="btn pq claro" target="_blank" href="' + esc(d.links.planilha) + '">Abrir a planilha</a>' : '') + ' <a class="btn pq claro" target="_blank" href="' + esc(d.links.pasta) + '">Pasta de comprovantes</a></div>' +
+      '<div class="grade" style="margin:10px 0">' + [['Entradas', d.resumo.entradas], ['Saídas', d.resumo.saidas], ['Saldo do mês', d.resumo.saldo]].map(function (x) { return '<div class="card"><p style="margin:0;font-size:13px;color:var(--texto-suave)">' + x[0] + '</p><h2 style="margin:4px 0 0">' + fnR(x[1]) + '</h2></div>'; }).join('') + '</div>' +
+      (d.resumo.semComprovante || d.resumo.naoConferidos ? '<div class="msg erro">' + (d.resumo.semComprovante ? d.resumo.semComprovante + ' lançamento(s) sem comprovante. ' : '') + (d.resumo.naoConferidos ? d.resumo.naoConferidos + ' ainda não conferido(s).' : '') + '</div>' : '') +
+      '<div class="botoes">' + abas.map(function (a) { return '<button class="btn pq ' + (FN.aba === a[0] ? '' : 'claro') + '" data-fna="' + a[0] + '">' + a[1] + '</button>'; }).join('') + '</div><div id="fn-msg"></div><div id="fn-corpo"></div>';
+    $('conteudo').innerHTML = h;
+    if (msg) aviso($('fn-msg'), msg[0], msg[1]);
+    $('fn-mes').onchange = function () { finTela(this.value); };
+    document.querySelectorAll('[data-fna]').forEach(function (b) { b.onclick = function () { FN.aba = b.getAttribute('data-fna'); finDesenhar(); }; });
+    ({ lancar: finLancarTela, lista: finListaTela, mes: finMesTela, orc: finOrcTela, contador: finContTela, impacto: finImpTela })[FN.aba]();
+  }
+  function finCats() { return $('fn-tipo').value === 'Entrada' ? FN.d.catEnt : FN.d.catSai; }
+  function finLancarTela() {
+    var d = FN.d, hoje = new Date().toISOString().slice(0, 10);
+    $('fn-corpo').innerHTML = '<div class="card"><h2>Novo lançamento</h2><div class="duas"><div>' +
+      '<label>Tipo *</label><select id="fn-tipo">' + haOpc(d.tipos, 'Saída') + '</select>' +
+      '<label>Valor (R$) *</label><input type="text" id="fn-valor" placeholder="Ex.: 150,00" inputmode="decimal">' +
+      '<label>Data *</label><input type="date" id="fn-data" value="' + hoje + '">' +
+      '<label>Categoria *</label><select id="fn-cat"></select></div><div>' +
+      '<label>Projeto ou setor</label><select id="fn-proj">' + haOpc(d.projetos, d.projetos[0]) + '</select>' +
+      '<label>Forma de pagamento</label><select id="fn-forma">' + haOpc(d.formas, 'PIX') + '</select>' +
+      '<label>Descrição *</label><input type="text" id="fn-desc" placeholder="O que foi pago ou recebido">' +
+      '<label>Comprovante (PDF ou imagem)</label><input type="file" id="fn-arq" accept=".pdf,image/*"><label>ou link do comprovante</label><input type="text" id="fn-link"></div></div>' +
+      '<p style="font-size:13px;color:var(--texto-suave)">Todo lançamento precisa de comprovante. Dinheiro do MAP nunca passa por conta pessoal. Quem lança não confere o próprio lançamento.</p>' +
+      '<button class="btn" id="fn-ok">Lançar</button></div>';
+    var cat = function () { $('fn-cat').innerHTML = haOpc(finCats(), '', 'Escolha'); }; cat(); $('fn-tipo').onchange = cat;
+    $('fn-ok').onclick = function () { var b = this; b.disabled = true;
+      haArq($('fn-arq')).then(function (arq) {
+        chamar('finLancar', [S.email, S.token, { tipo: $('fn-tipo').value, valor: $('fn-valor').value, data: $('fn-data').value, categoria: $('fn-cat').value, projeto: $('fn-proj').value,
+          forma: $('fn-forma').value, descricao: $('fn-desc').value, link: $('fn-link').value, arquivo: arq }], function (r) {
+          b.disabled = false; if (!r.ok) return aviso($('fn-msg'), 'erro', r.erro);
+          FN.aba = 'lista'; chamar('finDados', [S.email, S.token, FN.mes], function (r2) { if (r2.ok) { FN.d = r2; finDesenhar([r.alerta ? 'erro' : 'ok', 'Lançamento ' + r.id + ' registrado.' + (r.alerta ? ' ' + r.alerta : '')]); } });
+        });
+      }).catch(function (e) { b.disabled = false; aviso($('fn-msg'), 'erro', e.message); });
+    };
+  }
+  function finListaTela() {
+    var d = FN.d, edita = d.perfil !== 'contador';
+    $('fn-corpo').innerHTML = haTab(['ID', 'Data', 'Tipo', 'Valor', 'Categoria / projeto', 'Descrição', 'Comprovante', 'Situação', ''], d.lancamentos.map(function (l) {
+      return '<tr><td>' + esc(l.id) + '</td><td>' + esc(l.dataTxt) + '</td><td>' + esc(l.tipo) + '</td><td style="white-space:nowrap">' + fnR(l.valor) + '</td><td>' + esc(l.categoria) + '<br><small>' + esc(l.projeto) + '</small></td>' +
+        '<td>' + esc(l.descricao) + '</td><td>' + (l.comprovante ? '<a target="_blank" href="' + esc(l.comprovante) + '">Abrir</a>' : '<span class="selo ruim">Falta</span>' + (edita ? '<br><input type="file" data-fnarq="' + esc(l.id) + '" accept=".pdf,image/*" style="max-width:150px">' : '')) + '</td>' +
+        '<td><span class="selo ' + (l.situacao === 'Conferido' ? 'ok' : l.situacao === 'Cancelado' ? '' : 'alerta') + '">' + esc(l.situacao) + '</span>' + (l.conferidoPor ? '<br><small>' + esc(l.conferidoPor) + '</small>' : '') + '</td>' +
+        '<td style="white-space:nowrap">' + (edita && l.situacao === 'Registrado' ? '<button class="btn pq" data-fnc="' + esc(l.id) + '">Conferir</button> <button class="btn pq claro" data-fnx="' + esc(l.id) + '">Cancelar</button>' : '') + '</td></tr>';
+    }), 'Nenhum lançamento neste mês.');
+    document.querySelectorAll('[data-fnc]').forEach(function (b) { b.onclick = function () { finSit(b.getAttribute('data-fnc'), 'Conferido', ''); }; });
+    document.querySelectorAll('[data-fnx]').forEach(function (b) { b.onclick = function () { var m = prompt('Motivo do cancelamento:'); if (m) finSit(b.getAttribute('data-fnx'), 'Cancelado', m); }; });
+    document.querySelectorAll('[data-fnarq]').forEach(function (inp) { inp.onchange = function () {
+      haArq(inp).then(function (arq) { chamar('finComprovante', [S.email, S.token, inp.getAttribute('data-fnarq'), arq], function (r) { if (!r.ok) return aviso($('fn-msg'), 'erro', r.erro); finTela(FN.mes); }); }).catch(function (e) { aviso($('fn-msg'), 'erro', e.message); });
+    }; });
+  }
+  function finSit(id, sit, obs) { chamar('finSituacao', [S.email, S.token, id, sit, obs], function (r) { if (!r.ok) return aviso($('fn-msg'), 'erro', r.erro); chamar('finDados', [S.email, S.token, FN.mes], function (r2) { if (r2.ok) { FN.d = r2; finDesenhar(['ok', id + ': ' + sit + '.']); } }); }); }
+  function finMesTela() {
+    var R = FN.d.resumo;
+    $('fn-corpo').innerHTML = '<div class="duas secao"><div class="card"><h2>Por projeto ou setor</h2>' + haTab(['Projeto', 'Entradas', 'Saídas', 'Saldo'], R.projetos.map(function (p) { return '<tr><td>' + esc(p.projeto) + '</td><td>' + fnR(p.entradas) + '</td><td>' + fnR(p.saidas) + '</td><td>' + fnR(p.saldo) + '</td></tr>'; }), 'Sem lançamentos.') + '</div>' +
+      '<div class="card"><h2>Por categoria</h2>' + haTab(['Categoria', 'Valor'], R.categorias.map(function (c) { return '<tr><td>' + esc(c.categoria) + '</td><td>' + fnR(c.valor) + '</td></tr>'; }), 'Sem lançamentos.') + '</div></div>';
+  }
+  function finOrcTela() {
+    var d = FN.d, edita = d.perfil !== 'contador', ano = d.mes.slice(0, 4);
+    $('fn-corpo').innerHTML = '<div class="card"><h2>Orçamento ' + ano + '</h2><p style="font-size:13px;color:var(--texto-suave)">Valor previsto por projeto (e, se quiser, por categoria) x o que já saiu no ano. Em 80% aparece "Atenção"; em 100%, "Estourou" e a Gestão Geral recebe um e-mail.</p>' +
+      haTab(['Projeto ou setor', 'Categoria', 'Previsto', 'Gasto', '%', ''], d.orcamento.map(function (o) { return '<tr><td>' + esc(o.projeto) + '</td><td>' + esc(o.categoria || 'Todas') + '</td><td>' + fnR(o.previsto) + '</td><td>' + fnR(o.gasto) + '</td><td>' + o.pct + '%</td><td>' + (o.alerta ? '<span class="selo ' + (o.alerta === 'Estourou' ? 'ruim' : 'alerta') + '">' + o.alerta + '</span>' : '') + '</td></tr>'; }), 'Nenhum orçamento cadastrado para ' + ano + '.') +
+      (edita ? '<h3 style="margin-top:14px">Cadastrar ou atualizar</h3><div class="duas"><div><label>Projeto ou setor</label><select id="fo-proj">' + haOpc(d.projetos, d.projetos[0]) + '</select><label>Categoria (opcional)</label><select id="fo-cat">' + haOpc(d.catSai, '', 'Todas as categorias') + '</select></div>' +
+        '<div><label>Valor previsto no ano (R$)</label><input type="text" id="fo-val" inputmode="decimal"><label>Observação</label><input type="text" id="fo-obs"></div></div><button class="btn" id="fo-ok">Salvar orçamento</button>' : '') + '</div>';
+    if (edita) $('fo-ok').onclick = function () { chamar('finOrcamentoSalvar', [S.email, S.token, { ano: ano, projeto: $('fo-proj').value, categoria: $('fo-cat').value, previsto: $('fo-val').value, obs: $('fo-obs').value }], function (r) { if (!r.ok) return aviso($('fn-msg'), 'erro', r.erro); finTela(FN.mes); }); };
+  }
+  function finContTela() {
+    var d = FN.d, edita = d.perfil !== 'contador';
+    $('fn-corpo').innerHTML = '<div class="card"><h2>Para a contabilidade</h2><p>Todo dia 1º, o sistema fecha o mês anterior: gera o relatório (resumo, totais por projeto e categoria e a lista de lançamentos) e guarda junto com os comprovantes do mês, na pasta do mês. O contador parceiro, com perfil "Contador", consulta tudo por aqui.</p>' +
+      (edita ? '<button class="btn" id="fn-fechar">Gerar agora o relatório de ' + esc(d.mes) + '</button>' : '') +
+      haTab(['Mês', 'Entradas', 'Saídas', 'Saldo', 'Relatório', 'Comprovantes'], d.fechamentos.map(function (f) { return '<tr><td>' + esc(f.mes) + '</td><td>' + fnR(f.entradas) + '</td><td>' + fnR(f.saidas) + '</td><td>' + fnR(f.saldo) + '</td><td>' + (f.relatorio ? '<a target="_blank" href="' + esc(f.relatorio) + '">Abrir</a>' : '') + '</td><td>' + (f.pasta ? '<a target="_blank" href="' + esc(f.pasta) + '">Pasta</a>' : '') + '</td></tr>'; }), 'Nenhum mês fechado ainda.') + '</div>';
+    if (edita) $('fn-fechar').onclick = function () { var b = this; b.disabled = true; chamar('finFecharAgora', [S.email, S.token, d.mes], function (r) { b.disabled = false; if (!r.ok) return aviso($('fn-msg'), 'erro', r.erro); finTela(FN.mes); }); };
+  }
+  function finImpTela() {
+    $('fn-corpo').innerHTML = '<p class="carregando">Calculando o painel...</p>';
+    chamar('finImpacto', [S.email, S.token], function (r) {
+      if (!r.ok) { $('fn-corpo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      $('fn-corpo').innerHTML = '<div class="card"><h2>Painel de impacto</h2><p style="font-size:13px;color:var(--texto-suave)">Números totais que o MAP OS já registra, para editais, parcerias e prestação de contas. Nenhum dado de pessoa aparece aqui. Atualizado em ' + esc(r.gerado) + '.</p>' +
+        '<div class="grade">' + r.numeros.map(function (x) { return '<div class="card"><p style="margin:0;font-size:13px;color:var(--texto-suave)">' + esc(x.rotulo) + '</p><h2 style="margin:4px 0 0">' + esc(x.valor) + '</h2></div>'; }).join('') + '</div></div>';
+    });
   }
 </script>
 </body>
