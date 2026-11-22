@@ -102,7 +102,7 @@
   <div class="modal" id="modal"><div class="caixa" id="modal-corpo"></div></div>
 
 <script>
-  var MODULOS = [{"id":"porta-jod","nome":"Porta JOD — Porta de Entrada","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Quem entra no MAP, curadoria das entradas, grupos de Estado, tarefas e relatório semanal da equipe JOD.","url":"https://movimentoarmypower.github.io/porta-de-entrada/"},{"id":"rh-sam","nome":"RH e SAM","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Pessoas, voluntariado, atendimento e encaminhamentos: matrículas, pendências, trilhas e relatórios da equipe.","url":"https://movimentoarmypower.github.io/porta-de-entrada/?pagina=vagas"},{"id":"gestao-geral","nome":"Gestão Geral","descricao":"Visão institucional, prioridades, decisões e acompanhamento geral.","categoria":"Governança","status":"Em preparação","url":""},{"id":"conselho","nome":"Conselho","descricao":"Acompanhamento institucional e registros de governança.","categoria":"Governança","status":"Em preparação","url":""},{"id":"f-administrativo","nome":"Administrativo","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Equipe de apoio administrativo aos setores e projetos: demandas, tarefas, mural, eventos e documentos."},{"id":"f-comercial","nome":"Comercial & Produtos","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Produtos, vendas e parcerias comerciais: equipe e demandas, tarefas, mural, oportunidades, eventos e documentos."},{"id":"f-marketing-comunicacao","nome":"Comunicação & Marketing","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Criativo do MAP, comunicação, RP e imprensa: equipe e demandas, pautas, eventos, mural e documentos."},{"id":"financeiro","nome":"Financeiro & Contábil","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Entradas e saídas com comprovante, conferência, orçamento por projeto, relatório mensal para a contabilidade e painel de impacto.","url":""},{"id":"f-juridico","nome":"Jurídico","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Demandas jurídicas, documentos e acompanhamento de processos: equipe e demandas, tarefas, mural e documentos."},{"id":"painel-equipe","nome":"Painel da equipe","painel":true,"categoria":"Acompanhamento","status":"Conectado","descricao":"Quem enviou o relatório semanal, quem fez as tarefas, quem entrou no sistema e quem precisa de ajuda.","url":""},{"id":"tarefas","nome":"Tarefas e Atividades","descricao":"Demandas, responsáveis, prazos, entregas e pendências.","categoria":"Acompanhamento","status":"Planejado","url":""},{"id":"health-army","nome":"Health Army","area":true,"descricao":"Pacientes, sessões, profissionais e contratos, tarefas e relatórios das equipes do Health Army.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"sos-armys","nome":"SOS Armys","area":true,"descricao":"Pedidos de ajuda, curadoria do Acolhe Army, documentos, encaminhamentos, atendimentos e Fundo Emergencial.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"jus-voz","nome":"Sua Voz Importa · Área Técnica","area":true,"descricao":"Mobilização MAP + JusArmy: credenciamento de especialistas, termo de sigilo, demandas técnicas, laudos e dossiê.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"army-world","nome":"Army World","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Army World."},{"id":"f-agromap","nome":"AgroMAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do AgroMAP."},{"id":"f-bco-emprego","nome":"Banco de Empregos","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Ficha de chamada das capacitações, coprojetos, equipe e demandas, tarefas, mural, oportunidades públicas e relatório."},{"id":"f-butterfly","nome":"Butterfly","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Butterfly."},{"id":"f-cinemap","nome":"CineMAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do CineMAP."},{"id":"f-educa-army","nome":"Educa Army","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Ficha de chamada e matrículas das turmas, coprojetos, equipe e demandas, tarefas, mural, oportunidades públicas e relatório."},{"id":"f-ea","nome":"Empreende Army","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Empreende Army."},{"id":"f-eventos","nome":"Eventos MAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Eventos MAP."},{"id":"f-map-store","nome":"MAP Store","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do MAP Store."},{"id":"f-oficinas-map","nome":"Oficinas MAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Ficha de chamada e matrículas dos cursos, coprojetos, equipe e demandas, tarefas, mural, oportunidades públicas e relatório."},{"id":"suporte","nome":"Ajuda e Suporte","descricao":"Orientações e solicitações de ajuda para o MAP OS.","categoria":"Apoio","status":"Em preparação","url":""}];
+  var MODULOS = [{"id":"porta-jod","nome":"Porta JOD — Porta de Entrada","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Quem entra no MAP, curadoria das entradas, grupos de Estado, tarefas e relatório semanal da equipe JOD.","url":"https://movimentoarmypower.github.io/porta-de-entrada/"},{"id":"rh-sam","nome":"RH e SAM","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Pessoas, voluntariado, atendimento e encaminhamentos: matrículas, pendências, trilhas e relatórios da equipe.","url":"https://movimentoarmypower.github.io/porta-de-entrada/?pagina=vagas"},{"id":"f-administrativo","nome":"Administrativo","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Equipe de apoio administrativo aos setores e projetos: demandas, tarefas, mural, eventos e documentos."},{"id":"f-comercial","nome":"Comercial & Produtos","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Produtos, vendas e parcerias comerciais: equipe e demandas, tarefas, mural, oportunidades, eventos e documentos."},{"id":"f-marketing-comunicacao","nome":"Comunicação & Marketing","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Criativo do MAP, comunicação, RP e imprensa: equipe e demandas, pautas, eventos, mural e documentos."},{"id":"financeiro","nome":"Financeiro & Contábil","area":true,"categoria":"Setores transversais","status":"Conectado","descricao":"Entradas e saídas com comprovante, conferência, orçamento por projeto, relatório mensal para a contabilidade e painel de impacto.","url":""},{"id":"f-juridico","nome":"Jurídico","area":true,"frente":true,"categoria":"Setores transversais","status":"Conectado","url":"","descricao":"Demandas jurídicas, documentos e acompanhamento de processos: equipe e demandas, tarefas, mural e documentos."},{"id":"painel-equipe","nome":"Painel da equipe","painel":true,"categoria":"Acompanhamento","status":"Conectado","descricao":"Quem enviou o relatório semanal, quem fez as tarefas, quem entrou no sistema e quem precisa de ajuda.","url":""},{"id":"health-army","nome":"Health Army","area":true,"descricao":"Pacientes, sessões, profissionais e contratos, tarefas e relatórios das equipes do Health Army.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"sos-armys","nome":"SOS Armys","area":true,"descricao":"Pedidos de ajuda, curadoria do Acolhe Army, documentos, encaminhamentos, atendimentos e Fundo Emergencial.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"jus-voz","nome":"Sua Voz Importa · Área Técnica","area":true,"descricao":"Mobilização MAP + JusArmy: credenciamento de especialistas, termo de sigilo, demandas técnicas, laudos e dossiê.","categoria":"Frentes e projetos","status":"Conectado","url":""},{"id":"army-world","nome":"Army World","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Army World."},{"id":"f-agromap","nome":"AgroMAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do AgroMAP."},{"id":"f-bco-emprego","nome":"Banco de Empregos","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Ficha de chamada das capacitações, coprojetos, equipe e demandas, tarefas, mural, oportunidades públicas e relatório."},{"id":"f-butterfly","nome":"Butterfly","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Butterfly."},{"id":"f-cinemap","nome":"CineMAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do CineMAP."},{"id":"f-educa-army","nome":"Educa Army","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Ficha de chamada e matrículas das turmas, coprojetos, equipe e demandas, tarefas, mural, oportunidades públicas e relatório."},{"id":"f-ea","nome":"Empreende Army","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Empreende Army."},{"id":"f-eventos","nome":"Eventos MAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do Eventos MAP."},{"id":"f-map-store","nome":"MAP Store","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Coprojetos, equipe e demandas, tarefas, mural da equipe, oportunidades públicas e relatório do MAP Store."},{"id":"f-oficinas-map","nome":"Oficinas MAP","area":true,"frente":true,"categoria":"Frentes e projetos","status":"Conectado","url":"","descricao":"Ficha de chamada e matrículas dos cursos, coprojetos, equipe e demandas, tarefas, mural, oportunidades públicas e relatório."}];
   var S = { email: '', token: '', dados: null, area: null };
   var $ = function (id) { return document.getElementById(id); };
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -149,13 +149,13 @@
   })();
 
   
-  var CATS = ['Governança', 'Setores transversais', 'Frentes e projetos', 'Acompanhamento', 'Apoio'];
+  var CATS = ['Setores transversais', 'Frentes e projetos', 'Acompanhamento'];
   function iniciar(r) {
     S.dados = r;
     $('capa').classList.add('oculto'); $('app').classList.remove('oculto');
     $('quem-nome').textContent = r.pessoa.nome + (r.pessoa.mat ? ' · ' + r.pessoa.mat : '');
     $('quem-perfil').textContent = r.gestao ? 'Gestão Geral' : (r.perfis.join(', ') || 'Equipe');
-    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('minha-semana') >= 0 ? '<button data-v="area:minha-semana">Minha semana</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + (r.areas.indexOf('validar-equipe') >= 0 ? '<button data-v="area:validar-equipe">Validar equipe</button>' : '') + '<button data-v="avisos">Mural de avisos</button>';
+    var m = '<button data-v="inicio" class="ativo">Visão geral</button>' + (r.areas.indexOf('trilha') >= 0 ? '<button data-v="area:trilha">Minha trilha de integração</button>' : '') + (r.areas.indexOf('minha-semana') >= 0 ? '<button data-v="area:minha-semana">Minha semana</button>' : '') + (r.areas.indexOf('cobrar-trilha') >= 0 ? '<button data-v="area:cobrar-trilha">Cobrar trilhas</button>' : '') + (r.areas.indexOf('validar-equipe') >= 0 ? '<button data-v="area:validar-equipe">Validar equipe</button>' : '') + '<button data-v="avisos">Mural de avisos</button><button data-v="pedidos">Pedir um serviço</button>';
     CATS.forEach(function (c) { m += '<button data-v="cat:' + esc(c) + '">' + esc(c) + '</button>';
       if (c === 'Setores transversais') r.areas.forEach(function (a) { var mod = modulo(a); if (mod && !mod.frente && a !== 'health-army' && a !== 'sos-armys' && a !== 'jus-voz') m += '<button class="sub" data-v="area:' + a + '">' + esc(mod.nome) + '</button>'; });
       if (c === 'Setores transversais') MODULOS.filter(function (x) { return x.frente && x.categoria === c && r.areas.indexOf(x.id) >= 0; }).sort(function (a, b) { return a.nome.localeCompare(b.nome); }).forEach(function (x) { m += '<button class="sub" data-v="area:' + x.id + '">' + esc(x.nome) + '</button>'; });
@@ -196,6 +196,7 @@
     if (v === 'solicitacoes') return telaSolicitacoes('');
     if (v === 'presenca') return telaPresenca('');
     if (v === 'avisos') return telaAvisos();
+    if (v === 'pedidos' || v.indexOf('pedidos:') === 0) return telaPedidos(v.split(':')[1] || '');
     if (v === 'guia' || v.indexOf('guia:') === 0) return telaGuia(v.split(':')[1] || '');
   }
   function cardModulo(m) {
@@ -217,7 +218,8 @@
     var d = S.dados, h = '<h1>Olá, ' + esc(d.pessoa.curto) + '</h1><p class="sub-tit">Central de Gestão do ' + esc("Movimento Army Power") + '.</p>';
     var minhas = MODULOS.filter(function (m) { return (m.area && d.areas.indexOf(m.id) >= 0) || (m.painel && d.painel); });
     if (minhas.length) h += '<div class="secao"><h2>Suas áreas</h2><div class="grade">' + minhas.map(cardModulo).join('') + '</div></div>';
-    if (d.gestao) h += '<div class="secao"><h2>Todos os módulos</h2><div class="grade">' + MODULOS.filter(function (m) { return minhas.indexOf(m) < 0; }).map(cardModulo).join('') + '</div></div>';
+    var outros = MODULOS.filter(function (m) { return minhas.indexOf(m) < 0; });
+    if (d.gestao && outros.length) h += '<div class="secao"><h2>Outros módulos</h2><div class="grade">' + outros.map(cardModulo).join('') + '</div></div>';
     $('conteudo').innerHTML = h; ligarCards(); avisosHome();
   }
   function telaCategoria(c) {
@@ -925,6 +927,13 @@
       'Faltas seguidas: P zera a contagem; J não conta. Quando o aluno fica a uma falta do limite, aparece o aviso "perto do limite". Ao chegar no limite, ele sai da turma (Desistiu) e a vaga vai sozinha para a primeira pessoa da lista de espera, que recebe um e-mail e fica "A confirmar". Quando ela confirmar, mude para Ativa.',
       'Turmas com "Inscrições abertas" aparecem sozinhas nas Oportunidades públicas da frente.'
     ] },
+    { id: 'pedidos', titulo: 'Pedir um serviço aos setores', para: 'todos', texto: [
+      'No menu, clique em "Pedir um serviço" e escolha o setor: Administrativo, Financeiro & Contábil, Comercial & Produtos, Comunicação & Marketing, Jurídico ou Ajuda com o MAP OS.',
+      'Escolha o tipo de pedido, escreva um título e explique o que precisa. Se tiver material, cole o link ou anexe um arquivo de até 10 MB.',
+      'A equipe do setor vê o pedido em "Pedidos recebidos". Quem assumir fica responsável e você recebe um e-mail. Acompanhe e converse pela lista "Meus pedidos".',
+      'Denúncias ao Jurídico: use o cartão "Denúncia ao Jurídico". Pode ser anônima e recebe um número de protocolo. Só a coordenação do Jurídico e a Gestão Geral leem.',
+      'Equipe do setor: abra a área do setor, aba "Pedidos recebidos". Clique em "Assumir este pedido", mude a situação conforme avança e escreva para quem pediu. A coordenação pode passar o pedido para alguém da equipe.'
+    ] },
     { id: 'gestao', titulo: 'Para a Gestão: onde se muda cada coisa', para: 'gestao', texto: [
       'Tarefas de todas as áreas: planilha MAP_OS_Gestao_Central, aba Tarefas (uma linha por tarefa; Área: porta-jod, rh-sam, health-army ou sos-armys; coluna I = projeto). Para tirar uma tarefa do ar, mude o Status para Pausada.',
       'Quem entra na Porta JOD e no RH e SAM: planilha do Cadastro Único, aba Acessos (e-mail, matrícula, perfil, projeto e Situação "Ativo").',
@@ -956,7 +965,7 @@
     };
     var abrir = function (g) { return foco ? g.id === foco : g.id === 'entrar'; };
     var lista = GUIA.filter(mostra);
-    var h = '<h1>Como usar o MAP OS</h1><p class="sub-tit">Guia rápido. Clique em cada tema para abrir.</p>' +
+    var h = '<h1>Como usar o MAP OS</h1><p class="sub-tit">Guia rápido. Clique em cada tema para abrir.</p><div class="botoes"><button class="btn" onclick="ir(\'pedidos:suporte\')">Pedir ajuda com o MAP OS</button></div>' +
       '<input type="text" id="guia-busca" placeholder="Procurar no guia (ex.: código, prontuário, tarefa)..." style="margin-bottom:14px;max-width:420px">';
     h += lista.map(function (g) {
       return '<details class="pend" data-guia="' + g.id + '"' + (abrir(g) ? ' open' : '') + '><summary>' + esc(g.titulo) + '</summary><ol style="margin:10px 0 4px;padding-left:20px;line-height:1.55">' +
@@ -3855,7 +3864,7 @@
   }
   function finDesenhar(msg) {
     var d = FN.d, edita = d.perfil !== 'contador';
-    var abas = (edita ? [['lancar', 'Lançar']] : []).concat([['lista', 'Lançamentos do mês'], ['mes', 'Relatório do mês'], ['orc', 'Orçamento'], ['contador', 'Para a contabilidade'], ['impacto', 'Painel de impacto']]);
+    var abas = (edita ? [['lancar', 'Lançar']] : []).concat([['pedidos', 'Pedidos recebidos'], ['lista', 'Lançamentos do mês'], ['mes', 'Relatório do mês'], ['orc', 'Orçamento'], ['contador', 'Para a contabilidade'], ['impacto', 'Painel de impacto']]);
     var h = '<h1>Financeiro &amp; Contábil</h1><p class="sub-tit">Entradas, saídas, comprovantes, orçamento e relatórios do MAP · Perfil: ' + esc({ gestao: 'Gestão Geral', financeiro: 'Financeiro', contador: 'Contador (consulta)' }[d.perfil]) + '</p>' +
       '<div class="botoes"><label style="margin:0 6px 0 0">Mês</label><select id="fn-mes" style="max-width:150px">' + d.meses.map(function (m) { return '<option' + (m === d.mes ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select>' +
       (d.links.planilha ? ' <a class="btn pq claro" target="_blank" href="' + esc(d.links.planilha) + '">Abrir a planilha</a>' : '') + ' <a class="btn pq claro" target="_blank" href="' + esc(d.links.pasta) + '">Pasta de comprovantes</a></div>' +
@@ -3866,7 +3875,7 @@
     if (msg) aviso($('fn-msg'), msg[0], msg[1]);
     $('fn-mes').onchange = function () { finTela(this.value); };
     document.querySelectorAll('[data-fna]').forEach(function (b) { b.onclick = function () { FN.aba = b.getAttribute('data-fna'); finDesenhar(); }; });
-    ({ lancar: finLancarTela, lista: finListaTela, mes: finMesTela, orc: finOrcTela, contador: finContTela, impacto: finImpTela })[FN.aba]();
+    ({ pedidos: function () { pdFilaTela('financeiro', 'fn-corpo'); }, lancar: finLancarTela, lista: finListaTela, mes: finMesTela, orc: finOrcTela, contador: finContTela, impacto: finImpTela })[FN.aba]();
   }
   function finCats() { return $('fn-tipo').value === 'Entrada' ? FN.d.catEnt : FN.d.catSai; }
   function finLancarTela() {
@@ -3951,6 +3960,7 @@
   }
   function frAbas() {
     var d = FR.d, l = [];
+    if (d.frente.setor) l.push(['pedidos', 'Pedidos recebidos']);
     if (d.frente.chamada) l.push(['chamada', 'Chamada e matrículas']);
     l.push(['projetos', 'Coprojetos']);
     l.push(['equipe', 'Equipe e demandas']);
@@ -3972,6 +3982,7 @@
     $('conteudo').innerHTML = h;
     document.querySelectorAll('[data-fra]').forEach(function (b) { b.onclick = function () { FR.aba[area] = b.getAttribute('data-fra'); frDesenhar(); }; });
     var el = 'fr-corpo';
+    if (atual === 'pedidos') return pdFilaTela(area, el);
     if (atual === 'chamada') return chTela(area, el);
     if (atual === 'projetos') return frProjetos(el);
     if (atual === 'equipe') { EQ.aba = ''; return eqdTela(area, el); }
@@ -4151,6 +4162,206 @@
       if (r.semCoordenacao.length) h += '<div class="msg erro">Sem coordenação cadastrada no Catálogo: ' + r.semCoordenacao.map(esc).join(', ') + '</div>';
       $(el).innerHTML = h;
     });
+  }
+</script>
+
+<script>
+  
+  var PD = { d: null, setor: '', fila: null, sub: 'pedidos', filtro: 'abertos' };
+  function pdLerArquivo(input, ok, falha) {
+    var f = input && input.files && input.files[0];
+    if (!f) return ok(null);
+    if (f.size > 10 * 1024 * 1024) return falha('Arquivo maior que 10 MB. Envie um arquivo menor ou um link.');
+    var r = new FileReader();
+    r.onload = function () { ok({ nome: f.name, tipo: f.type, dados: String(r.result).split(',')[1] }); };
+    r.onerror = function () { falha('Não foi possível ler o arquivo.'); };
+    r.readAsDataURL(f);
+  }
+  function pdCampo(f, v) {
+    var id = 'pdc-' + f.id, h = '<label>' + esc(f.rotulo) + (f.obrig ? ' *' : '') + '</label>';
+    if (f.tipo === 'lista') return h + '<select id="' + id + '">' + haOpc(f.opcoes, v || '', 'Escolha') + '</select>';
+    if (f.tipo === 'projeto') return h + '<select id="' + id + '">' + haOpc(PD.d.projetos, v || '', 'Escolha') + '</select>';
+    if (f.tipo === 'data') return h + '<input type="date" id="' + id + '" value="' + esc(v || '') + '">';
+    if (f.tipo === 'area') return h + '<textarea id="' + id + '">' + esc(v || '') + '</textarea>';
+    return h + '<input type="text" id="' + id + '" placeholder="' + esc(f.dica || '') + '" value="' + esc(v || '') + '">';
+  }
+  function pdSelo(s) { return '<span class="selo ' + (/conclu|finaliz|aprovad|publicad/i.test(s) ? 'ok' : /cancel|sem retorno|não seguiu|arquivad/i.test(s) ? 'ruim' : /aberto|pendente|nova|registrada/i.test(s) ? 'alerta' : '') + '">' + esc(s) + '</span>'; }
+  function pdHist(l) { return l && l.length ? '<details style="margin-top:6px"><summary style="font-size:13px">Histórico (' + l.length + ')</summary>' + l.map(function (h) { return '<p style="margin:4px 0;font-size:13px"><b>' + esc(h.em) + '</b> · ' + esc(h.tipo) + ' · ' + esc(h.texto) + '</p>'; }).join('') + '</details>' : ''; }
+
+  
+  function telaPedidos(setor, msg) {
+    $('conteudo').innerHTML = '<p class="carregando">Carregando...</p>';
+    chamar('pdAbrir', [S.email, S.token], function (r) {
+      if (!r.ok) { $('conteudo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      PD.d = r;
+      var h = '<h1>Pedir um serviço</h1><p class="sub-tit">Peça ajuda aos setores do MAP. A equipe do setor assume o pedido e você acompanha aqui.</p><div id="pd-msg"></div>' +
+        '<div class="grade">' + r.setores.map(function (s) { return '<div class="card modulo" data-pds="' + s.id + '"><h3>' + esc(s.nome) + '</h3><p>' + esc(s.tipos.slice(0, 3).join(' · ')) + (s.tipos.length > 3 ? '...' : '') + '</p></div>'; }).join('') +
+        '<div class="card modulo" data-pds="denuncia"><h3>Denúncia ao Jurídico</h3><p>Infrações, difamação, cópia de projetos, uso indevido do nome do MAP. Pode ser anônima.</p></div></div>' +
+        '<div id="pd-form"></div><h2 style="margin-top:18px">Meus pedidos (' + r.meus.length + ')</h2>' +
+        (r.meus.length ? r.meus.map(function (p) {
+          return '<div class="pend"><b>' + esc(p.titulo) + '</b> ' + pdSelo(p.situacao) + ' <span class="selo">' + esc(p.setorNome) + '</span><p class="vazio" style="padding:4px 0">' + esc(p.id + ' · ' + p.tipo + ' · pedido em ' + p.em + (p.resp ? ' · com ' + p.resp : ' · aguardando alguém assumir')) + '</p>' +
+            pdHist(p.hist) + (p.fechado ? '' : '<div class="botoes" style="margin-top:6px"><input type="text" id="pdm-' + esc(p.id) + '" placeholder="Escrever uma mensagem para a equipe" style="flex:1;min-width:200px"><button class="btn pq" data-pdmsg="' + esc(p.id) + '">Enviar</button>' +
+            (!p.resp ? '<button class="btn pq claro" data-pdcan="' + esc(p.id) + '">Cancelar o pedido</button>' : '') + '</div>') + '</div>';
+        }).join('') : '<p class="vazio">Você ainda não fez pedidos.</p>');
+      $('conteudo').innerHTML = h;
+      if (msg) aviso($('pd-msg'), msg[0], msg[1]);
+      document.querySelectorAll('[data-pds]').forEach(function (c) { c.onclick = function () { var s = c.getAttribute('data-pds'); if (s === 'denuncia') pdDenunciaForm(); else pdForm(s); }; });
+      document.querySelectorAll('[data-pdmsg]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-pdmsg'); b.disabled = true; chamar('pdAcao', [S.email, S.token, id, 'comentar', { texto: $('pdm-' + id).value }], function (x) { b.disabled = false; if (!x.ok) return aviso($('pd-msg'), 'erro', x.erro); telaPedidos('', ['ok', 'Mensagem enviada.']); }); }; });
+      document.querySelectorAll('[data-pdcan]').forEach(function (b) { b.onclick = function () { if (!confirm('Cancelar este pedido?')) return; chamar('pdAcao', [S.email, S.token, b.getAttribute('data-pdcan'), 'cancelar', {}], function (x) { if (!x.ok) return aviso($('pd-msg'), 'erro', x.erro); telaPedidos('', ['ok', 'Pedido cancelado.']); }); }; });
+      if (setor === 'denuncia') pdDenunciaForm(); else if (setor) pdForm(setor);
+    });
+  }
+  function pdForm(setor) {
+    var s = PD.d.setores.filter(function (x) { return x.id === setor; })[0]; if (!s) return;
+    $('pd-form').innerHTML = '<div class="card secao"><h2>Pedido para ' + esc(s.nome) + '</h2><div class="duas"><div>' +
+      '<label>Tipo de pedido *</label><select id="pd-tipo">' + haOpc(s.tipos, '', 'Escolha') + '</select>' +
+      '<label>Título *</label><input type="text" id="pd-tit" maxlength="150" placeholder="Em poucas palavras">' +
+      '<label>O que você precisa *</label><textarea id="pd-desc" style="min-height:120px" placeholder="Explique o pedido, o contexto e o resultado esperado."></textarea></div><div>' +
+      s.campos.map(function (f) { return pdCampo(f); }).join('') +
+      '<label>Link de material (opcional)</label><input type="text" id="pd-link" placeholder="https://...">' +
+      '<label>Anexo (opcional, até 10 MB)</label><input type="file" id="pd-arq"></div></div>' +
+      '<div class="botoes"><button class="btn" id="pd-ok">Enviar pedido</button><button class="btn claro" id="pd-x">Fechar</button></div><div id="pd-res"></div></div>';
+    $('pd-form').scrollIntoView();
+    $('pd-x').onclick = function () { $('pd-form').innerHTML = ''; };
+    $('pd-ok').onclick = function () {
+      var b = this, det = {}; s.campos.forEach(function (f) { det[f.id] = $('pdc-' + f.id).value; });
+      b.disabled = true;
+      pdLerArquivo($('pd-arq'), function (arq) {
+        chamar('pdCriar', [S.email, S.token, { setor: setor, tipo: $('pd-tipo').value, titulo: $('pd-tit').value, descricao: $('pd-desc').value, link: $('pd-link').value, detalhes: det, arquivo: arq }], function (x) {
+          b.disabled = false;
+          if (!x.ok) return aviso($('pd-res'), 'erro', x.erro);
+          telaPedidos('', ['ok', 'Pedido ' + x.id + ' enviado para ' + s.nome + '. Você recebe um e-mail quando alguém assumir.']);
+        });
+      }, function (er) { b.disabled = false; aviso($('pd-res'), 'erro', er); });
+    };
+  }
+  function pdDenunciaForm() {
+    $('pd-form').innerHTML = '<div class="card secao"><h2>Denúncia ao Jurídico</h2><p class="vazio" style="padding:0 0 8px">Só a coordenação do Jurídico e a Gestão Geral leem as denúncias. Você recebe um número de protocolo.</p><div class="duas"><div>' +
+      '<label>Tipo *</label><select id="dn-cat">' + haOpc(PD.d.denCat, '', 'Escolha') + '</select>' +
+      '<label>O que aconteceu *</label><textarea id="dn-rel" style="min-height:140px"></textarea>' +
+      '<label>Quando</label><input type="text" id="dn-qd" placeholder="Data ou período"></div><div>' +
+      '<label>Onde (plataforma, grupo, link)</label><input type="text" id="dn-onde">' +
+      '<label>Pessoas ou perfis envolvidos</label><textarea id="dn-env"></textarea>' +
+      '<label>Links de provas (prints, vídeos, posts)</label><textarea id="dn-prov"></textarea>' +
+      '<label>Arquivo de prova (opcional, até 10 MB)</label><input type="file" id="dn-arq">' +
+      '<label style="font-weight:normal"><input type="checkbox" id="dn-anon"> Enviar sem me identificar (anônima)</label>' +
+      '<label style="font-weight:normal"><input type="checkbox" id="dn-ok"> Confirmo que as informações são verdadeiras</label></div></div>' +
+      '<div class="botoes"><button class="btn" id="dn-env-b">Registrar denúncia</button><button class="btn claro" id="dn-x">Fechar</button></div><div id="dn-res"></div></div>';
+    $('pd-form').scrollIntoView();
+    $('dn-x').onclick = function () { $('pd-form').innerHTML = ''; };
+    $('dn-env-b').onclick = function () {
+      var b = this; b.disabled = true;
+      pdLerArquivo($('dn-arq'), function (arq) {
+        chamar('pdDenunciaEquipe', [S.email, S.token, { categoria: $('dn-cat').value, relato: $('dn-rel').value, quando: $('dn-qd').value, onde: $('dn-onde').value, envolvidos: $('dn-env').value,
+          provas: $('dn-prov').value, arquivos: arq ? [arq] : [], anonima: $('dn-anon').checked, aceite: $('dn-ok').checked }], function (x) {
+          b.disabled = false;
+          if (!x.ok) return aviso($('dn-res'), 'erro', x.erro);
+          telaPedidos('', ['ok', 'Denúncia registrada. Protocolo: ' + x.id + '. Guarde este número.']);
+        });
+      }, function (er) { b.disabled = false; aviso($('dn-res'), 'erro', er); });
+    };
+  }
+
+  
+  function pdFilaTela(setor, el, msg) {
+    PD.setor = setor; PD.el = el;
+    $(el).innerHTML = '<p class="carregando">Carregando os pedidos...</p>';
+    chamar('pdFila', [S.email, S.token, setor], function (r) {
+      if (!r.ok) { $(el).innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      PD.fila = r;
+      var subs = [['pedidos', 'Pedidos']];
+      if (r.ideias) subs.push(['ideias', 'Ideias de produtos (' + r.ideias.filter(function (i) { return i.situacao === 'Nova'; }).length + ' novas)'], ['convites', 'Convites a fornecedores']);
+      if (r.denuncias) subs.push(['denuncias', 'Denúncias (' + r.denuncias.filter(function (i) { return i.situacao === 'Registrada'; }).length + ' novas)']);
+      if (!subs.some(function (s) { return s[0] === PD.sub; })) PD.sub = 'pedidos';
+      var h = '<div id="pdf-msg"></div>' + (subs.length > 1 ? '<div class="botoes">' + subs.map(function (s) { return '<button class="btn pq ' + (PD.sub === s[0] ? '' : 'claro') + '" data-pdsub="' + s[0] + '">' + esc(s[1]) + '</button>'; }).join('') + '</div>' : '') + '<div id="pdf-corpo"></div>';
+      $(el).innerHTML = h;
+      if (msg) aviso($('pdf-msg'), msg[0], msg[1]);
+      document.querySelectorAll('[data-pdsub]').forEach(function (b) { b.onclick = function () { PD.sub = b.getAttribute('data-pdsub'); pdFilaTela(setor, el); }; });
+      ({ pedidos: pdFilaPedidos, ideias: pdFilaIdeias, convites: pdFilaConvites, denuncias: pdFilaDenuncias })[PD.sub]();
+    });
+  }
+  function pdFilaPedidos() {
+    var r = PD.fila, F = PD.filtro;
+    var l = r.lista.filter(function (p) { return F === 'todos' || (F === 'meus' ? p.meu && !p.fechado : !p.fechado); });
+    var livres = r.lista.filter(function (p) { return !p.fechado && !p.resp; }).length;
+    var h = '<div class="nums"><div class="num"><b>' + livres + '</b><span>esperando alguém assumir</span></div><div class="num"><b>' + r.lista.filter(function (p) { return !p.fechado; }).length + '</b><span>em aberto</span></div>' +
+      '<div class="num"><b>' + r.lista.filter(function (p) { return p.meu && !p.fechado; }).length + '</b><span>comigo</span></div></div>' +
+      '<div class="botoes">' + [['abertos', 'Em aberto'], ['meus', 'Comigo'], ['todos', 'Todos']].map(function (x) { return '<button class="btn pq ' + (F === x[0] ? '' : 'claro') + '" data-pdfl="' + x[0] + '">' + x[1] + '</button>'; }).join('') +
+      '<button class="btn pq claro" onclick="ir(\'pedidos:' + r.setor + '\')">Fazer um pedido para este setor</button></div>';
+    h += l.length ? l.map(function (p) {
+      var det = Object.keys(p.detalhes || {}).map(function (k) { return esc(k) + ': ' + esc(p.detalhes[k]); }).join(' · ');
+      var pode = r.papel.coord || (r.papel.atende && p.meu);
+      return '<div class="pend"><b>' + esc(p.titulo) + '</b> ' + pdSelo(p.situacao) + ' <span class="selo">' + esc(p.tipo) + '</span>' +
+        '<p class="vazio" style="padding:4px 0">' + esc(p.id + ' · pedido por ' + p.nome + ' em ' + p.em + (p.resp ? ' · responsável: ' + p.resp : ' · ninguém assumiu ainda')) + '</p>' +
+        '<p style="margin:6px 0;white-space:pre-wrap">' + esc(p.descricao) + '</p>' + (det ? '<p class="vazio" style="padding:0">' + det + '</p>' : '') +
+        (p.link ? '<p style="margin:4px 0"><a target="_blank" href="' + esc(p.link) + '">Material</a></p>' : '') + (p.anexo ? '<p style="margin:4px 0"><a target="_blank" href="' + esc(p.anexo) + '">Anexo</a></p>' : '') +
+        pdHist(p.hist) + (p.fechado ? '' : '<div class="botoes" style="margin-top:8px">' +
+          (!p.resp && r.papel.atende ? '<button class="btn pq" data-pda="assumir" data-id="' + esc(p.id) + '">Assumir este pedido</button>' : '') +
+          (pode ? '<select data-pdsit="' + esc(p.id) + '" style="max-width:200px">' + haOpc(r.sit, p.situacao) + '</select>' : '') +
+          (r.papel.coord && r.equipe.length ? '<select data-pdpass="' + esc(p.id) + '" style="max-width:220px">' + haOpc(r.equipe.map(function (e) { return e.email; }), '', 'Passar para...') + '</select>' : '') +
+          '<input type="text" id="pdr-' + esc(p.id) + '" placeholder="Mensagem para quem pediu" style="flex:1;min-width:180px"><button class="btn pq claro" data-pda="comentar" data-id="' + esc(p.id) + '">Enviar</button></div>') + '</div>';
+    }).join('') : '<p class="vazio">Nenhum pedido aqui.</p>';
+    $('pdf-corpo').innerHTML = h;
+    var volta = function (x, ok) { if (!x.ok) return aviso($('pdf-msg'), 'erro', x.erro); pdFilaTela(PD.setor, PD.el, ['ok', ok]); };
+    document.querySelectorAll('[data-pdfl]').forEach(function (b) { b.onclick = function () { PD.filtro = b.getAttribute('data-pdfl'); pdFilaPedidos(); }; });
+    document.querySelectorAll('[data-pda]').forEach(function (b) { b.onclick = function () {
+      var id = b.getAttribute('data-id'), a = b.getAttribute('data-pda'); b.disabled = true;
+      chamar('pdAcao', [S.email, S.token, id, a, a === 'comentar' ? { texto: $('pdr-' + id).value } : {}], function (x) { volta(x, a === 'assumir' ? 'Pedido assumido. Quem pediu foi avisado.' : 'Mensagem enviada.'); });
+    }; });
+    document.querySelectorAll('[data-pdsit]').forEach(function (s) { s.onchange = function () {
+      var id = s.getAttribute('data-pdsit'), nota = $('pdr-' + id).value; s.disabled = true;
+      chamar('pdAcao', [S.email, S.token, id, 'situacao', { situacao: s.value, nota: nota }], function (x) { volta(x, 'Situação atualizada.'); });
+    }; });
+    document.querySelectorAll('[data-pdpass]').forEach(function (s) { s.onchange = function () {
+      if (!s.value) return; s.disabled = true;
+      chamar('pdAcao', [S.email, S.token, s.getAttribute('data-pdpass'), 'passar', { email: s.value }], function (x) { volta(x, 'Pedido passado. A pessoa recebeu um e-mail.'); });
+    }; });
+  }
+  function pdFilaIdeias() {
+    var r = PD.fila;
+    var h = '<div class="card secao"><p style="margin:0"><b>Link público para receber ideias de produtos em parceria</b> (para redes sociais, site, grupos e e-mails):</p><p style="margin:6px 0 0"><a target="_blank" href="' + esc(r.links.ideias) + '">' + esc(r.links.ideias) + '</a></p></div>';
+    h += r.ideias.length ? r.ideias.map(function (i) {
+      return '<div class="pend"><b>' + esc(i.ideia) + '</b> ' + pdSelo(i.situacao) + ' <span class="selo">' + esc(i.tipo) + '</span>' +
+        '<p class="vazio" style="padding:4px 0">' + esc([i.id, i.em, i.nome, i.empresa, i.local, i.email, i.whats].filter(Boolean).join(' · ')) + '</p>' +
+        '<p style="margin:6px 0;white-space:pre-wrap">' + esc(i.descricao) + '</p><p class="vazio" style="padding:0">' + [['Público', i.publico], ['Diferencial', i.diferencial], ['Papel do MAP', i.papel], ['Protótipo', i.prototipo], ['Proposta', i.proposta], ['Links', i.links]].filter(function (x) { return x[1]; }).map(function (x) { return '<b>' + x[0] + ':</b> ' + esc(x[1]); }).join('<br>') + '</p>' +
+        (i.notas ? '<p style="font-size:13px;margin:4px 0"><b>Notas:</b> ' + esc(i.notas) + '</p>' : '') +
+        (r.papel.atende ? '<div class="botoes" style="margin-top:6px"><select id="ids-' + esc(i.id) + '" style="max-width:200px">' + haOpc(r.ideiaSit, i.situacao) + '</select><input type="text" id="idn-' + esc(i.id) + '" placeholder="Notas internas" value="' + esc(i.notas) + '" style="flex:1;min-width:180px"><button class="btn pq" data-idok="' + esc(i.id) + '">Salvar</button></div>' : '') + '</div>';
+    }).join('') : '<p class="vazio">Nenhuma ideia recebida ainda.</p>';
+    $('pdf-corpo').innerHTML = h;
+    document.querySelectorAll('[data-idok]').forEach(function (b) { b.onclick = function () {
+      var id = b.getAttribute('data-idok'); b.disabled = true;
+      chamar('pdIdeiaAtualizar', [S.email, S.token, id, { situacao: $('ids-' + id).value, notas: $('idn-' + id).value, resp: 'eu' }], function (x) { if (!x.ok) { b.disabled = false; return aviso($('pdf-msg'), 'erro', x.erro); } pdFilaTela(PD.setor, PD.el, ['ok', 'Ideia atualizada.']); });
+    }; });
+  }
+  function pdFilaConvites() {
+    var r = PD.fila;
+    var h = (r.conviteLiberado ? '' : '<div class="msg erro">O envio automático do convite ainda não foi liberado pela Gestão Geral. Os convites ficam salvos como rascunho.</div>') +
+      (r.papel.atende ? '<div class="card secao"><h2>Convidar empresa fornecedora</h2><div class="duas"><div><label>Empresa *</label><input type="text" id="cv-emp"><label>Nome do contato *</label><input type="text" id="cv-con"><label>E-mail da empresa *</label><input type="text" id="cv-em"></div>' +
+        '<div><label>Produto MAP</label><input type="text" id="cv-prod" placeholder="Ex.: caneca exclusiva MAP"><label>Mensagem extra (opcional)</label><textarea id="cv-msg"></textarea></div></div>' +
+        '<div class="botoes"><button class="btn claro" id="cv-prev">Ver o texto</button><button class="btn" id="cv-ok">' + (r.conviteLiberado ? 'Enviar convite' : 'Salvar rascunho') + '</button></div><div id="cv-res"></div></div>' : '');
+    h += '<h2>Convites</h2>' + haTab(['ID', 'Empresa', 'Contato', 'Produto', 'Situação', 'Enviado em', 'Por'], r.convites.map(function (c) { return '<tr><td>' + esc(c.id) + '</td><td>' + esc(c.empresa) + '</td><td>' + esc(c.contato + ' · ' + c.email) + '</td><td>' + esc(c.produto) + '</td><td>' + esc(c.situacao) + '</td><td>' + esc(c.enviado) + '</td><td>' + esc(c.por) + '</td></tr>'; }), 'Nenhum convite ainda.');
+    $('pdf-corpo').innerHTML = h;
+    var dados = function (previa) { return { empresa: $('cv-emp').value, contato: $('cv-con').value, email: $('cv-em').value, produto: $('cv-prod').value, mensagem: $('cv-msg').value, previa: previa }; };
+    if ($('cv-prev')) $('cv-prev').onclick = function () { chamar('pdConvite', [S.email, S.token, dados(true)], function (x) { if (!x.ok) return aviso($('cv-res'), 'erro', x.erro); $('cv-res').innerHTML = '<pre style="white-space:pre-wrap;background:#fff;border:1px solid #ddd;padding:10px;border-radius:8px">' + esc(x.previa) + '</pre>'; }); };
+    if ($('cv-ok')) $('cv-ok').onclick = function () { var b = this; b.disabled = true; chamar('pdConvite', [S.email, S.token, dados(false)], function (x) { b.disabled = false; if (!x.ok) return aviso($('cv-res'), 'erro', x.erro); pdFilaTela(PD.setor, PD.el, ['ok', 'Convite ' + x.id + (x.enviado ? ' enviado.' : ' salvo como rascunho.')]); }); };
+  }
+  function pdFilaDenuncias() {
+    var r = PD.fila;
+    var h = '<div class="card secao"><p style="margin:0"><b>Link público de denúncias</b> (aceita denúncia anônima):</p><p style="margin:6px 0 0"><a target="_blank" href="' + esc(r.links.denuncia) + '">' + esc(r.links.denuncia) + '</a></p>' +
+      '<p class="vazio" style="padding:6px 0 0">Sigilo: só a coordenação do Jurídico e a Gestão Geral veem esta aba.</p></div>';
+    h += r.denuncias.length ? r.denuncias.map(function (d) {
+      return '<div class="pend"><b>' + esc(d.id) + '</b> ' + pdSelo(d.situacao) + ' <span class="selo">' + esc(d.categoria) + '</span>' +
+        '<p class="vazio" style="padding:4px 0">' + esc([d.em, d.canal, d.anonima ? 'Anônima' : (d.nome + ' · ' + d.contato), d.resp ? 'Responsável: ' + d.resp : ''].filter(Boolean).join(' · ')) + '</p>' +
+        '<p style="margin:6px 0;white-space:pre-wrap">' + esc(d.relato) + '</p><p class="vazio" style="padding:0">' + [['Quando', d.quando], ['Onde', d.onde], ['Envolvidos', d.envolvidos], ['Provas', d.provas]].filter(function (x) { return x[1]; }).map(function (x) { return '<b>' + x[0] + ':</b> ' + esc(x[1]); }).join('<br>') + '</p>' +
+        (d.arquivos ? d.arquivos.split('\n').map(function (u, i) { return '<a target="_blank" href="' + esc(u) + '">Arquivo ' + (i + 1) + '</a>'; }).join(' · ') : '') +
+        (d.notas ? '<details><summary style="font-size:13px">Notas internas</summary><p style="white-space:pre-wrap;font-size:13px">' + esc(d.notas) + '</p></details>' : '') +
+        '<div class="botoes" style="margin-top:6px"><select id="dns-' + esc(d.id) + '" style="max-width:220px">' + haOpc(r.denSit, d.situacao) + '</select><input type="text" id="dnn-' + esc(d.id) + '" placeholder="Nova nota interna" style="flex:1;min-width:180px"><button class="btn pq" data-dnok="' + esc(d.id) + '">Salvar</button></div></div>';
+    }).join('') : '<p class="vazio">Nenhuma denúncia registrada.</p>';
+    $('pdf-corpo').innerHTML = h;
+    document.querySelectorAll('[data-dnok]').forEach(function (b) { b.onclick = function () {
+      var id = b.getAttribute('data-dnok'); b.disabled = true;
+      chamar('pdDenunciaAtualizar', [S.email, S.token, id, { situacao: $('dns-' + id).value, nota: $('dnn-' + id).value, resp: 'eu' }], function (x) { if (!x.ok) { b.disabled = false; return aviso($('pdf-msg'), 'erro', x.erro); } pdFilaTela(PD.setor, PD.el, ['ok', 'Denúncia atualizada.']); });
+    }; });
   }
 </script>
 
