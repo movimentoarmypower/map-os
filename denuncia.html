@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canal de denúncias | Movimento Army Power</title>
+<style>
+:root{--roxo-escuro:#401443;--roxo:#702477;--magenta:#a12ba4;--fundo:#f7f5f8;--texto:#26152e;--suave:#776b7d;--borda:#e9e0ec;--verde:#17806a;--vermelho:#b42318;--azul:#36c3c7}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--texto);background:var(--fundo);line-height:1.45}
+header{background:var(--roxo-escuro);color:#fff;padding:28px 16px}
+header .in,main{max-width:760px;margin:0 auto}
+.marca{display:flex;align-items:center;gap:12px}
+.ic{width:44px;height:44px;border-radius:12px;background:var(--azul);display:grid;place-items:center;font-weight:bold}
+header h1{margin:16px 0 6px;font-size:26px}
+header p{margin:0;opacity:.9}
+main{padding:22px 16px 48px}
+.card{background:#fff;border:1px solid var(--borda);border-radius:16px;padding:20px;margin-bottom:16px}
+h2{font-size:18px;color:var(--roxo-escuro);margin:0 0 10px}
+label{display:block;font-weight:bold;font-size:14px;margin:14px 0 5px}
+small.d{display:block;color:var(--suave);font-weight:normal;font-size:13px;margin-top:2px}
+input[type=text],input[type=email],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--borda);border-radius:10px;font:inherit;background:#fff}
+textarea{min-height:110px;resize:vertical}
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media(max-width:620px){.duas{grid-template-columns:1fr}}
+.ac{display:flex;gap:10px;align-items:flex-start;font-weight:normal;margin-top:18px}
+.ac input{margin-top:4px}
+button{background:var(--magenta);color:#fff;border:0;border-radius:10px;padding:12px 22px;font:inherit;font-weight:bold;cursor:pointer;margin-top:18px}
+button:disabled{opacity:.6;cursor:wait}
+.msg{padding:12px 14px;border-radius:10px;margin-top:14px;display:none}
+.msg.erro{display:block;background:#fdecea;color:var(--vermelho)}
+.msg.ok{display:block;background:#e3f4ef;color:var(--verde)}
+.oculto{position:absolute;left:-9999px}
+footer{text-align:center;color:var(--suave);font-size:13px;padding:0 16px 30px}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <div class="marca"><div class="ic">MAP</div><b>Movimento Army Power</b></div>
+  <h1>Canal de denúncias do MAP</h1>
+  <p>Use este canal para relatar condutas que ferem o MAP, seus projetos, suas equipes ou sua diretoria. A denúncia vai direto para o setor Jurídico e é tratada com sigilo.</p>
+</div></header>
+<main>
+<div class="card"><h2>Antes de começar</h2>
+<p style="margin:0">Você pode se identificar ou fazer a denúncia de forma anônima. Ao enviar, você recebe um número de protocolo. Guarde esse número. Se a denúncia for anônima, não temos como responder a você, por isso conte o máximo de detalhes possível.</p>
+<p style="margin:10px 0 0">Em caso de risco imediato à vida ou à segurança de alguém, procure as autoridades locais.</p></div>
+<form id="f" class="card" novalidate>
+  <h2>O que aconteceu</h2>
+  <label for="categoria">Tipo de denúncia *</label>
+  <select id="categoria">
+    <option value="">Escolha...</option>
+    <option>Infração de membro, voluntário, equipe ou parceiro</option>
+    <option>Difamação, ataque ou constrangimento ao MAP</option>
+    <option>Cópia de projeto ou metodologia do MAP sem consentimento</option>
+    <option>Uso indevido do nome, da marca ou de materiais do MAP</option>
+    <option>Crime contra a honra do MAP ou da diretoria</option>
+    <option>Assédio ou violação de conduta em grupos do MAP</option>
+    <option>Outro</option>
+  </select>
+  <label for="relato">Conte o que aconteceu *<small class="d">Descreva os fatos com o máximo de detalhes.</small></label><textarea id="relato" maxlength="6000" style="min-height:160px"></textarea>
+  <div class="duas">
+    <div><label for="quando">Quando aconteceu?</label><input type="text" id="quando" maxlength="200" placeholder="Data ou período"></div>
+    <div><label for="onde">Onde aconteceu?<small class="d">Plataforma, grupo, evento ou link.</small></label><input type="text" id="onde" maxlength="600"></div>
+  </div>
+  <label for="envolvidos">Pessoas, perfis ou empresas envolvidas</label><textarea id="envolvidos" maxlength="1000" style="min-height:70px"></textarea>
+  <label for="provas">Links de provas (opcional)<small class="d">Publicações, prints salvos na nuvem, vídeos.</small></label><textarea id="provas" maxlength="1500" style="min-height:70px"></textarea>
+  <label for="arq">Arquivos (opcional)<small class="d">Até 3 arquivos de até 5 MB cada: imagem, PDF, áudio, vídeo curto ou documento.</small></label><input type="file" id="arq" multiple accept="image/*,application/pdf,audio/*,video/mp4,.doc,.docx,.txt">
+
+  <h2 style="margin-top:24px">Identificação</h2>
+  <label class="ac" style="margin-top:6px"><input type="checkbox" id="anonima"> <span>Quero fazer a denúncia de forma anônima</span></label>
+  <div id="ident" class="duas">
+    <div><label for="nome">Seu nome</label><input type="text" id="nome" maxlength="120" autocomplete="name"></div>
+    <div><label for="contato">E-mail ou telefone para contato *</label><input type="text" id="contato" maxlength="150"></div>
+  </div>
+
+  <input type="text" id="site" class="oculto" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <label class="ac"><input type="checkbox" id="aceite"> <span>Declaro que as informações são verdadeiras, até onde sei, e concordo que o MAP use estes dados só para apurar a denúncia.</span></label>
+  <button type="submit" id="bt">Enviar denúncia</button>
+  <div id="msg" class="msg" role="status"></div>
+</form>
+</main>
+<footer>Movimento Army Power · Brasil, Portugal e Angola</footer>
+<script>
+(function(){
+  var API = "https://script.google.com/macros/s/AKfycbz726zGhy4aDOOMWJHMOYh6h6QKpm6svEQFk9RxIBrjuYhoY9C9MvgqZopIOnhF3nWu/exec";
+  var $ = function(id){ return document.getElementById(id); };
+  function aviso(t, ok){ var m = $('msg'); m.className = 'msg ' + (ok ? 'ok' : 'erro'); m.textContent = t; m.scrollIntoView({behavior:'smooth', block:'center'}); }
+  $('anonima').addEventListener('change', function(){ $('ident').style.display = this.checked ? 'none' : ''; });
+  function ler(f){ return new Promise(function(ok, falha){ var r = new FileReader(); r.onload = function(){ ok({nome: f.name, tipo: f.type || 'application/octet-stream', dados: String(r.result).split(',')[1]}); }; r.onerror = falha; r.readAsDataURL(f); }); }
+  $('f').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var d = {};
+    ['categoria','relato','quando','onde','envolvidos','provas','nome','contato','site'].forEach(function(k){ d[k] = $(k).value.trim(); });
+    d.anonima = $('anonima').checked; d.aceite = $('aceite').checked;
+    if (d.anonima) { d.nome = ''; d.contato = ''; }
+    var fs = [].slice.call($('arq').files || []);
+    if (!d.categoria) return aviso('Escolha o tipo de denúncia.');
+    if (d.relato.length < 40) return aviso('Conte o que aconteceu com mais detalhes (pelo menos 40 letras).');
+    if (!d.anonima && !d.contato) return aviso('Deixe um contato ou marque a denúncia como anônima.');
+    if (fs.length > 3) return aviso('Envie no máximo 3 arquivos.');
+    if (fs.some(function(f){ return f.size > 5 * 1024 * 1024; })) return aviso('Cada arquivo pode ter no máximo 5 MB. Para arquivos maiores, envie um link.');
+    if (!d.aceite) return aviso('Confirme que as informações são verdadeiras para enviar.');
+    $('bt').disabled = true; $('bt').textContent = 'Enviando...';
+    Promise.all(fs.map(ler)).then(function(arqs){
+      d.arquivos = arqs;
+      return fetch(API, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({fn:'pdDenunciaEnviar', args:[d]}), redirect:'follow'});
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var r = j && j.r;
+        if (j && j.__erro !== undefined) throw new Error(j.__erro);
+        if (!r || !r.ok) throw new Error(r && r.erro || 'Não foi possível enviar agora.');
+        $('f').reset(); $('ident').style.display = '';
+        aviso('Denúncia recebida. Seu protocolo é ' + r.id + '. Guarde este número.', true);
+      })
+      .catch(function(e){ aviso(e && e.message && !/fetch|network/i.test(e.message) ? e.message : 'Sem conexão no momento. Confira a internet e tente de novo.'); })
+      .then(function(){ $('bt').disabled = false; $('bt').textContent = 'Enviar denúncia'; });
+  });
+})();
+</script>
+</body>
+</html>
