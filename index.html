@@ -171,11 +171,13 @@
     m += '<button data-v="guia">Como usar o MAP OS</button>';
     $('menu').innerHTML = m;
     $('menu').querySelectorAll('button').forEach(function (b) { b.onclick = function () { ir(b.getAttribute('data-v')); }; });
+    setTimeout(cvContador, 2500); setInterval(cvContador, 120000);
     ir(r.areas.length === 1 && !r.gestao ? 'area:' + r.areas[0] : 'inicio');
     if (r.areas.length === 1 && !r.gestao) avisosHome();
   }
   function modulo(id) { return MODULOS.filter(function (m) { return m.id === id; })[0]; }
   function ir(v) {
+    if (window.cvParar) cvParar();
     $('menu').querySelectorAll('button').forEach(function (b) { b.classList.toggle('ativo', b.getAttribute('data-v') === v); });
     window.scrollTo(0, 0);
     if (v === 'inicio') return telaInicio();
@@ -1994,15 +1996,18 @@
 
 <script>
   
-  var PL = { d: null, aba: 'planos', aberto: '', frente: '', iniEdit: '', andEdit: '' };
-  function telaPlanejamento() {
-    $('conteudo').innerHTML = '<p class="carregando">Carregando o planejamento...</p>';
-    chamar('plDados', [S.email, S.token], function (r) {
-      if (!r.ok) { $('conteudo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+  var PL = { d: null, aba: 'planos', aberto: '', frente: '', iniEdit: '', andEdit: '', alvo: '', area: '' };
+  
+  function plNaFrente(area, el) { PL.alvo = el; PL.area = area; PL.aberto = ''; PL.frente = ''; if (PL.aba === 'config') PL.aba = 'planos'; plCarregar(); }
+  function telaPlanejamento() { PL.alvo = ''; PL.area = ''; plCarregar(); }
+  function plCarregar() {
+    $(PL.alvo || 'conteudo').innerHTML = '<p class="carregando">Carregando o planejamento...</p>';
+    chamar('plDados', [S.email, S.token, PL.area], function (r) {
+      if (!r.ok) { $(PL.alvo || 'conteudo').innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
       PL.d = r; plDesenhar();
     });
   }
-  function plRecarregar(txt) { chamar('plDados', [S.email, S.token], function (r) { if (r.ok) { PL.d = r; PL.iniEdit = ''; PL.andEdit = ''; plDesenhar(); if (txt) plMsg('ok', txt); } }); }
+  function plRecarregar(txt) { chamar('plDados', [S.email, S.token, PL.area], function (r) { if (r.ok) { PL.d = r; PL.iniEdit = ''; PL.andEdit = ''; plDesenhar(); if (txt) plMsg('ok', txt); } }); }
   function plMsg(t, x) { var m = $('pl-msg'); if (m) { aviso(m, t, x); m.scrollIntoView({ block: 'nearest' }); } }
   function plSelo(s) { var c = { 'Aprovado': 'ok', 'Enviado': 'alerta', 'Ajustes solicitados': 'ruim', 'Concluída': 'ok', 'Em andamento': 'alerta', 'Cancelada': '' }[s] || ''; return '<span class="selo ' + c + '">' + esc(s) + '</span>'; }
   function plBarra(p) { return '<div style="background:#f1e7f3;border-radius:8px;height:8px;margin:6px 0"><div style="background:var(--verde);height:8px;border-radius:8px;width:' + Math.max(0, Math.min(100, p)) + '%"></div></div>'; }
@@ -2017,9 +2022,9 @@
     PL.aberto = '';
     var minhas = [];
     d.planos.forEach(function (p) { p.iniciativas.forEach(function (i) { if (i.minha && i.situacao !== 'Concluída' && i.situacao !== 'Cancelada') minhas.push({ p: p, i: i }); }); });
-    var abas = [['planos', 'Planos']].concat(minhas.length ? [['minhas', 'Minhas iniciativas (' + minhas.length + ')']] : []).concat(d.gestao ? [['pendentes', 'Sem plano enviado (' + d.pendentes.length + ')'], ['config', 'Configurações']] : []);
+    var abas = [['planos', 'Planos']].concat(minhas.length ? [['minhas', 'Minhas iniciativas (' + minhas.length + ')']] : []).concat(d.gestao && !d.area ? [['pendentes', 'Sem plano enviado (' + d.pendentes.length + ')'], ['config', 'Configurações']] : (d.area && d.pendentes.length ? [['pendentes', 'Sem plano enviado (' + d.pendentes.length + ')']] : []));
     if (!abas.some(function (a) { return a[0] === PL.aba; })) PL.aba = 'planos';
-    var h = '<h1>Planejamento ' + esc(d.ano) + '</h1><p class="sub-tit">Plano anual de cada projeto e setor: objetivo do ano, metas por semestre e iniciativas por trimestre. ' +
+    var h = (d.area ? '<h2>Planejamento ' + esc(d.ano) + ' · ' + esc(d.frenteNome) + '</h2><p class="vazio" style="padding:0 0 8px">' : '<h1>Planejamento ' + esc(d.ano) + '</h1><p class="sub-tit">') + 'Plano anual de cada projeto e setor: objetivo do ano, metas por semestre e iniciativas por trimestre. ' +
       (d.prazoEnvio ? 'Prazo para enviar o plano à Gestão Geral: <b>' + esc(d.prazoEnvio) + '</b>.' : '') + '</p>';
     if (d.gestao) {
       var c = { env: 0, apr: 0, aj: 0, atr: 0 };
@@ -2029,7 +2034,7 @@
         '<div class="num"><b style="color:' + (c.atr ? 'var(--vermelho)' : 'inherit') + '">' + c.atr + '</b><span>iniciativas atrasadas</span></div></div>';
     }
     h += '<div class="botoes">' + abas.map(function (a) { return '<button class="btn ' + (PL.aba === a[0] ? '' : 'claro') + '" data-plaba="' + a[0] + '">' + a[1] + '</button>'; }).join('') + '</div><div id="pl-msg"></div><div id="pl-corpo"></div>';
-    $('conteudo').innerHTML = h;
+    $(PL.alvo || 'conteudo').innerHTML = h;
     document.querySelectorAll('[data-plaba]').forEach(function (b) { b.onclick = function () { PL.aba = b.getAttribute('data-plaba'); plDesenhar(); }; });
     ({ planos: plLista, minhas: function () { plMinhas(minhas); }, pendentes: plPendentes, config: plConfig })[PL.aba]();
   }
@@ -2109,7 +2114,7 @@
       });
     });
     h += '</div>';
-    $('conteudo').innerHTML = h;
+    $(PL.alvo || 'conteudo').innerHTML = h;
     $('pl-voltar').onclick = function (e) { e.preventDefault(); PL.aberto = ''; plDesenhar(); };
     if ($('pp-salvar')) $('pp-salvar').onclick = function () {
       var b = this; b.disabled = true;
@@ -3993,6 +3998,8 @@
     if (d.frente.setor) l.push(['pedidos', 'Pedidos recebidos']);
     if (d.frente.chamada) l.push(['chamada', 'Chamada e matrículas']);
     l.push(['projetos', 'Coprojetos']);
+    l.push(['conversas', 'Conversas' + (d.naoLidas ? ' (' + d.naoLidas + ')' : '')]);
+    l.push(['plano', 'Planejamento anual']);
     l.push(['equipe', 'Equipe e demandas']);
     l.push(['semana', 'Minha semana']);
     l.push(['mural', 'Mural da equipe']);
@@ -4015,6 +4022,8 @@
     if (atual === 'pedidos') return pdFilaTela(area, el);
     if (atual === 'chamada') return chTela(area, el);
     if (atual === 'projetos') return frProjetos(el);
+    if (atual === 'conversas') return cvTela(area, el);
+    if (atual === 'plano') return plNaFrente(area, el);
     if (atual === 'equipe') { EQ.aba = ''; return eqdTela(area, el); }
     if (atual === 'semana') return frSemana(area, el);
     if (atual === 'mural') return frMural(area, d.frente.nome, el);
@@ -4191,6 +4200,181 @@
       h += '<h2 style="margin-top:18px">Coprojetos</h2><p class="vazio">' + (Object.keys(r.coprojetos).map(function (k) { return esc(k) + ': ' + r.coprojetos[k]; }).join(' · ') || 'Nenhum no Catálogo') + '</p>';
       if (r.semCoordenacao.length) h += '<div class="msg erro">Sem coordenação cadastrada no Catálogo: ' + r.semCoordenacao.map(esc).join(', ') + '</div>';
       $(el).innerHTML = h;
+    });
+  }
+</script>
+
+<style>
+  .cv-lista .cv-g{display:flex;justify-content:space-between;gap:10px;align-items:center;cursor:pointer}
+  .cv-lista .cv-g:hover{border-color:var(--magenta)}
+  .cv-badge{background:var(--magenta);color:#fff;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:bold}
+  .cv-msgs{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:12px;height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+  .cv-m{max-width:78%;background:#f6f0f7;border-radius:12px;padding:8px 11px;align-self:flex-start;word-wrap:break-word}
+  .cv-m.eu{align-self:flex-end;background:#e3f4ef}
+  .cv-m .cv-q{font-size:12px;color:var(--texto-suave);margin-bottom:3px}
+  .cv-m .cv-r{display:inline-block;font-size:11px;background:#fff;border:1px solid var(--borda);border-radius:10px;padding:0 6px;margin-left:4px;color:var(--roxo)}
+  .cv-m .cv-x{font-size:11px;margin-left:6px;cursor:pointer;color:var(--texto-suave);text-decoration:underline}
+  .cv-mural{border-left:4px solid var(--magenta);background:#fff;border-radius:10px;padding:8px 12px;margin-bottom:8px}
+  .cv-env{display:flex;gap:8px;margin-top:8px}.cv-env textarea{flex:1;min-height:52px}
+</style>
+<script>
+  
+  var CV = { area: '', el: '', d: null, g: '', ult: 0, timer: null, m: null };
+  function cvParar() { if (CV.timer) { clearInterval(CV.timer); CV.timer = null; } }
+  function cvHora(ts) { var d = new Date(ts), p = function (n) { return ('0' + n).slice(-2); }; return p(d.getDate()) + '/' + p(d.getMonth() + 1) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
+  function cvTexto(t) { return esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a target="_blank" rel="noopener" href="$1">$1</a>').replace(/\n/g, '<br>'); }
+
+  function cvTela(area, el) {
+    cvParar(); CV.area = area; CV.el = el; CV.g = '';
+    $(el).innerHTML = '<p class="carregando">Carregando as conversas...</p>';
+    chamar('cvAbrir', [S.email, S.token, area], function (r) {
+      if (!r.ok) { $(el).innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      CV.d = r;
+      var h = '<p class="vazio" style="padding:0 0 8px">Grupos de conversa internos desta frente. O grupo da Coordenação reúne as coordenações de todos os coprojetos; os grupos de equipe são separados.</p><div id="cv-msg-top"></div>';
+      if (r.gerencia) h += '<div class="botoes"><button class="btn" id="cv-novo">Criar grupo</button></div><div id="cv-form"></div>';
+      var bloco = function (tit, l) {
+        return l.length ? '<h2 style="margin-top:14px">' + tit + '</h2><div class="cv-lista">' + l.map(function (g) {
+          return '<div class="card cv-g" data-cvg="' + esc(g.id) + '" style="margin-bottom:8px;' + (g.ativo ? '' : 'opacity:.55') + '"><div><b>' + esc(g.nome) + '</b>' + (g.ativo ? '' : ' <span class="selo">Desativado</span>') +
+            '<p class="vazio" style="padding:2px 0 0">' + g.n + ' pessoa(s)' + (g.ultima ? ' · ' + esc(g.ultima.nome) + ': ' + esc(g.ultima.txt) : ' · sem mensagens ainda') + '</p></div>' +
+            (g.naoLidas ? '<span class="cv-badge">' + g.naoLidas + '</span>' : '') + '</div>';
+        }).join('') + '</div>' : '';
+      };
+      h += bloco('Coordenação', r.grupos.filter(function (g) { return g.tipo === 'Coordenação'; }));
+      h += bloco('Equipes', r.grupos.filter(function (g) { return g.tipo !== 'Coordenação'; }));
+      if (!r.grupos.length) h += '<p class="vazio">Você ainda não participa de nenhum grupo desta frente.</p>';
+      $(el).innerHTML = h;
+      document.querySelectorAll('[data-cvg]').forEach(function (c) { c.onclick = function () { cvAbrirGrupo(c.getAttribute('data-cvg')); }; });
+      if ($('cv-novo')) $('cv-novo').onclick = function () { cvFormGrupo(null); };
+    });
+  }
+
+  function cvEscolhaPessoas(sel) {
+    return '<div style="max-height:260px;overflow-y:auto;border:1px solid var(--borda);border-radius:10px;padding:8px"><input type="text" id="cv-busca" placeholder="Procurar pelo nome" style="margin-bottom:6px">' +
+      CV.d.pessoas.map(function (p) { return '<label class="cv-pp" style="font-weight:normal;display:block"><input type="checkbox" class="cv-pes" value="' + esc(p.email) + '"' + (sel.indexOf(p.email) >= 0 ? ' checked' : '') + '> ' + esc(p.nome) + ' <small style="color:var(--texto-suave)">' + esc(p.rotulo) + '</small></label>'; }).join('') + '</div>';
+  }
+  function cvLigarBusca() {
+    if ($('cv-busca')) $('cv-busca').oninput = function () { var q = this.value.toLowerCase(); document.querySelectorAll('.cv-pp').forEach(function (l) { l.style.display = l.textContent.toLowerCase().indexOf(q) >= 0 ? 'block' : 'none'; }); };
+  }
+  
+  function cvFormGrupo(g) {
+    var alvo = g ? 'cv-ger' : 'cv-form', sel = g ? g.membros : [];
+    $(alvo).innerHTML = '<div class="card secao"><h2>' + (g ? 'Editar grupo' : 'Novo grupo') + '</h2><label>Nome do grupo *</label><input type="text" id="cv-gn" maxlength="80" value="' + esc(g ? g.nome : '') + '">' +
+      '<label>Quem participa' + (g && g.auto ? ' (o grupo automático continua recebendo quem entrar na frente; aqui você inclui ou tira pessoas)' : '') + '</label>' + cvEscolhaPessoas(sel) +
+      (g ? '<label style="font-weight:normal;margin-top:8px"><input type="checkbox" id="cv-gat"' + (g.ativo ? ' checked' : '') + '> Grupo ativo</label>' : '') +
+      '<div class="botoes"><button class="btn" id="cv-gok">Salvar</button><button class="btn claro" id="cv-gx">Fechar</button></div><div id="cv-gres"></div></div>';
+    cvLigarBusca();
+    $('cv-gx').onclick = function () { $(alvo).innerHTML = ''; };
+    $('cv-gok').onclick = function () {
+      var b = this, marc = [].slice.call(document.querySelectorAll('.cv-pes:checked')).map(function (x) { return x.value; });
+      var d = { id: g ? g.id : '', nome: $('cv-gn').value };
+      if (!g) d.membros = marc;
+      else { d.incluir = marc.filter(function (e) { return sel.indexOf(e) < 0; }); d.retirar = sel.filter(function (e) { return CV.d.pessoas.some(function (p) { return p.email === e; }) && marc.indexOf(e) < 0; }); d.ativo = $('cv-gat').checked; }
+      b.disabled = true;
+      chamar('cvGrupoSalvar', [S.email, S.token, CV.area, d], function (x) {
+        b.disabled = false; if (!x.ok) return aviso($('cv-gres'), 'erro', x.erro);
+        if (g) cvAbrirGrupo(g.id, 'Grupo atualizado.'); else cvAbrirGrupo(x.id, 'Grupo criado.');
+      });
+    };
+  }
+
+  function cvAbrirGrupo(gid, msg) {
+    cvParar(); CV.g = gid; CV.ult = 0;
+    var el = CV.el;
+    $(el).innerHTML = '<p class="carregando">Abrindo o grupo...</p>';
+    chamar('cvMensagens', [S.email, S.token, CV.area, gid, 0], function (r) {
+      if (!r.ok) { $(el).innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div><button class="btn claro" onclick="cvTela(CV.area, CV.el)">Voltar</button>'; return; }
+      CV.m = r;
+      var g = r.grupo;
+      var h = '<div class="botoes"><button class="btn pq claro" id="cv-volta">← Todos os grupos</button>' +
+        '<button class="btn pq claro" id="cv-mem">Membros (' + r.membros.length + ')</button>' +
+        (r.gerencia ? '<button class="btn pq claro" id="cv-ed">Editar grupo</button><button class="btn pq claro" id="cv-mn">Novo aviso no mural</button>' : '') + '</div>' +
+        '<h2 style="margin:10px 0 6px">' + esc(g.nome) + (g.ativo ? '' : ' <span class="selo">Desativado</span>') + '</h2><div id="cv-aviso"></div><div id="cv-ger"></div><div id="cv-memb"></div>' +
+        '<div id="cv-mural">' + r.mural.map(function (a) {
+          return '<div class="cv-mural"><b>' + esc(a.titulo) + '</b><p style="margin:4px 0;white-space:pre-wrap">' + cvTexto(a.texto) + '</p><small style="color:var(--texto-suave)">' + esc(a.por + ' · ' + a.em) + '</small>' +
+            (r.gerencia ? ' <a href="#" data-cvmed="' + esc(a.id) + '">editar</a> · <a href="#" data-cvmrm="' + esc(a.id) + '">tirar do mural</a>' : '') + '</div>';
+        }).join('') + '</div>' +
+        '<div class="cv-msgs" id="cv-msgs"></div>' +
+        '<div class="cv-env"><textarea id="cv-txt" maxlength="2000" placeholder="Escreva a mensagem (Enter envia, Shift+Enter pula linha)"></textarea><button class="btn" id="cv-ok">Enviar</button></div>';
+      $(el).innerHTML = h;
+      if (msg) aviso($('cv-aviso'), 'ok', msg);
+      $('cv-volta').onclick = function () { cvTela(CV.area, CV.el); };
+      $('cv-mem').onclick = cvMembros;
+      if ($('cv-ed')) $('cv-ed').onclick = function () { cvFormGrupo({ id: g.id, nome: g.nome, auto: g.auto, ativo: g.ativo, membros: r.membros.map(function (m) { return m.email; }) }); };
+      if ($('cv-mn')) $('cv-mn').onclick = function () { cvFormMural(null); };
+      document.querySelectorAll('[data-cvmed]').forEach(function (a) { a.onclick = function (ev) { ev.preventDefault(); cvFormMural(r.mural.filter(function (x) { return x.id === a.getAttribute('data-cvmed'); })[0]); }; });
+      document.querySelectorAll('[data-cvmrm]').forEach(function (a) { a.onclick = function (ev) { ev.preventDefault(); if (!confirm('Tirar este aviso do mural do grupo?')) return;
+        chamar('cvMuralSalvar', [S.email, S.token, CV.area, gid, { id: a.getAttribute('data-cvmrm'), remover: true }], function (x) { if (!x.ok) return aviso($('cv-aviso'), 'erro', x.erro); cvAbrirGrupo(gid, 'Aviso retirado do mural.'); }); }; });
+      cvPor(r.msgs, true);
+      var envia = function () {
+        var t = $('cv-txt').value.trim(); if (!t) return;
+        $('cv-ok').disabled = true;
+        chamar('cvEnviar', [S.email, S.token, CV.area, gid, t], function (x) {
+          $('cv-ok').disabled = false;
+          if (!x.ok) return aviso($('cv-aviso'), 'erro', x.erro);
+          $('cv-txt').value = ''; cvPor([x.msg], true);
+        });
+      };
+      $('cv-ok').onclick = envia;
+      $('cv-txt').onkeydown = function (ev) { if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); envia(); } };
+      CV.timer = setInterval(function () {
+        if (!$('cv-msgs') || CV.g !== gid) return cvParar();
+        chamar('cvMensagens', [S.email, S.token, CV.area, gid, CV.ult], function (x) { if (x.ok && $('cv-msgs') && CV.g === gid) cvPor(x.msgs, false); });
+      }, 8000);
+    });
+  }
+  function cvPor(l, rolar) {
+    var box = $('cv-msgs'); if (!box) return;
+    var noFim = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+    l.forEach(function (m) {
+      if (m.ts > CV.ult) CV.ult = m.ts;
+      if (document.getElementById('cvm-' + m.id)) return;
+      var eu = m.email === CV.m.eu;
+      box.insertAdjacentHTML('beforeend', '<div class="cv-m' + (eu ? ' eu' : '') + '" id="cvm-' + esc(m.id) + '"><div class="cv-q"><b>' + esc(eu ? 'Você' : m.nome) + '</b>' + (m.rot ? '<span class="cv-r">' + esc(m.rot) + '</span>' : '') + ' · ' + cvHora(m.ts) +
+        (!m.del && (eu || CV.m.gerencia) ? '<span class="cv-x" data-cvdel="' + esc(m.id) + '">apagar</span>' : '') + '</div>' + '<div class="cv-t">' + (m.del ? '<i style="color:var(--texto-suave)">Mensagem apagada</i>' : cvTexto(m.txt)) + '</div></div>');
+    });
+    if (!box.children.length) box.innerHTML = '<p class="vazio" id="cv-vazio">Nenhuma mensagem ainda. Escreva a primeira!</p>';
+    else if ($('cv-vazio') && box.children.length > 1) $('cv-vazio').remove();
+    box.querySelectorAll('[data-cvdel]').forEach(function (x) { x.onclick = function () {
+      if (!confirm('Apagar esta mensagem?')) return;
+      var id = x.getAttribute('data-cvdel');
+      chamar('cvApagar', [S.email, S.token, CV.area, CV.g, id], function (r) { if (!r.ok) return aviso($('cv-aviso'), 'erro', r.erro); var d = $('cvm-' + id); if (d) { d.querySelector('.cv-t').innerHTML = '<i style="color:var(--texto-suave)">Mensagem apagada</i>'; x.remove(); } });
+    }; });
+    if (rolar || noFim) box.scrollTop = box.scrollHeight;
+  }
+  function cvMembros() {
+    var r = CV.m, alvo = $('cv-memb');
+    if (alvo.innerHTML) { alvo.innerHTML = ''; return; }
+    alvo.innerHTML = '<div class="card secao"><h2>Membros</h2>' + r.membros.map(function (m, i) {
+      return '<div style="display:flex;gap:8px;align-items:center;margin:4px 0;flex-wrap:wrap"><span>' + esc(m.nome) + '</span>' +
+        (r.gerencia ? '<input type="text" id="cv-rot-' + i + '" value="' + esc(m.rotulo) + '" style="max-width:160px" maxlength="30"><button class="btn pq claro" data-cvrot="' + i + '">Salvar rótulo</button>' : '<span class="selo">' + esc(m.rotulo) + '</span>') + '</div>';
+    }).join('') + (r.gerencia ? '<p class="vazio" style="padding:6px 0 0">O rótulo aparece ao lado do nome nas mensagens (ex.: Coord. PN). Vale para todos os grupos desta frente.</p>' : '') + '<div id="cv-rotres"></div></div>';
+    alvo.querySelectorAll('[data-cvrot]').forEach(function (b) { b.onclick = function () {
+      var i = +b.getAttribute('data-cvrot'); b.disabled = true;
+      chamar('cvRotuloSalvar', [S.email, S.token, CV.area, r.membros[i].email, $('cv-rot-' + i).value], function (x) { b.disabled = false; aviso($('cv-rotres'), x.ok ? 'ok' : 'erro', x.ok ? 'Rótulo salvo. Vale para as próximas mensagens.' : x.erro); });
+    }; });
+  }
+  function cvFormMural(a) {
+    $('cv-ger').innerHTML = '<div class="card secao"><h2>' + (a ? 'Editar aviso do mural' : 'Novo aviso no mural do grupo') + '</h2><p class="vazio" style="padding:0 0 6px">Fica fixo no alto do grupo até você tirar.</p>' +
+      '<label>Título *</label><input type="text" id="cv-mt" maxlength="120" value="' + esc(a ? a.titulo : '') + '"><label>Texto *</label><textarea id="cv-mx" maxlength="3000">' + esc(a ? a.texto : '') + '</textarea>' +
+      '<div class="botoes"><button class="btn" id="cv-mok">Publicar no mural</button><button class="btn claro" id="cv-mxx">Fechar</button></div><div id="cv-mres"></div></div>';
+    $('cv-mxx').onclick = function () { $('cv-ger').innerHTML = ''; };
+    $('cv-mok').onclick = function () {
+      var b = this; b.disabled = true;
+      chamar('cvMuralSalvar', [S.email, S.token, CV.area, CV.g, { id: a ? a.id : '', titulo: $('cv-mt').value, texto: $('cv-mx').value }], function (x) {
+        b.disabled = false; if (!x.ok) return aviso($('cv-mres'), 'erro', x.erro); cvAbrirGrupo(CV.g, 'Mural atualizado.');
+      });
+    };
+  }
+  
+  function cvContador() {
+    chamar('cvContagem', [S.email, S.token], function (r) {
+      if (!r.ok) return;
+      document.querySelectorAll('#menu [data-v^="area:"]').forEach(function (b) {
+        var id = b.getAttribute('data-v').slice(5), n = r.porFrente[id] || 0, s = b.querySelector('.cv-badge');
+        if (s) s.remove();
+        if (n) b.insertAdjacentHTML('beforeend', ' <span class="cv-badge" title="Mensagens não lidas">' + n + '</span>');
+      });
+      if (window.FR && FR.d && FR.d.frente) { var n2 = r.porFrente[FR.d.frente.id] || 0; FR.d.naoLidas = n2; var t = document.querySelector('[data-fra="conversas"]'); if (t) t.textContent = 'Conversas' + (n2 ? ' (' + n2 + ')' : ''); }
     });
   }
 </script>
@@ -4423,7 +4607,28 @@
           '<div class="botoes"><button class="btn" id="dir-ok">Salvar</button>' + (eu.escrito ? '<span style="font-size:13px;color:var(--texto-suave);align-self:center">Salvo em ' + esc(eu.escrito) + '</span>' : '') + '</div></div>';
       }
       h += r.lista.map(function (p) { return dirCartao(p, false); }).join('') || '<p class="vazio">Ninguém da Diretoria cadastrado.</p>';
+      if (r.gerencia) {
+        h += '<details class="pend" id="dir-ger"' + (DIR.gerAberto ? ' open' : '') + '><summary>Quem está na Diretoria (incluir, mudar cargo, marcar saída)</summary>' +
+          '<p class="vazio" style="padding:4px 0">Você sempre aparece. Quem sai deixa de receber o lembrete e de aparecer nas próximas semanas; os resumos antigos continuam guardados.</p>' +
+          '<div class="tab-wrap"><table><thead><tr><th>Nome</th><th>E-mail</th><th>Cargo</th><th>Situação</th><th></th></tr></thead><tbody>' +
+          r.membros.map(function (m, i) {
+            return '<tr><td>' + esc(m.nome) + '</td><td><small>' + esc(m.email) + '</small></td><td><input type="text" id="dirc-' + i + '" value="' + esc(m.cargo) + '" style="min-width:160px"></td><td>' + (m.ativa ? 'Ativa' : 'Saiu') + '</td>' +
+              '<td style="white-space:nowrap"><button class="btn pq" data-dired="' + i + '">Salvar cargo</button> ' + (m.ativa ? '<button class="btn pq claro" data-dirsai="' + i + '">Marcar saída</button>' : '<button class="btn pq claro" data-dirvolta="' + i + '">Voltou</button>') + '</td></tr>';
+          }).join('') + '</tbody></table></div>' +
+          '<h3 style="margin-top:12px">Incluir pessoa</h3><div class="duas"><div><label>E-mail *</label><input type="text" id="dirn-em"><label>Nome (se ficar vazio, vem do cadastro)</label><input type="text" id="dirn-nome"></div>' +
+          '<div><label>Cargo *</label><input type="text" id="dirn-cargo" placeholder="Ex.: Vice-presidente, Diretora de Projetos"><button class="btn" id="dirn-ok" style="margin-top:12px">Incluir na Diretoria</button></div></div><div id="dir-ger-msg"></div></details>';
+      }
       $('conteudo').innerHTML = h;
+      if (r.gerencia) {
+        var salvarDir = function (d, txt) {
+          DIR.gerAberto = true;
+          chamar('dirEquipeSalvar', [S.email, S.token, d], function (x) { if (!x.ok) return aviso($('dir-ger-msg'), 'erro', x.erro); telaDiretoria(r.semana, ['ok', txt]); });
+        };
+        document.querySelectorAll('[data-dired]').forEach(function (b) { b.onclick = function () { var m = r.membros[+b.getAttribute('data-dired')]; salvarDir({ acao: 'editar', email: m.email, cargo: $('dirc-' + b.getAttribute('data-dired')).value }, 'Cargo atualizado.'); }; });
+        document.querySelectorAll('[data-dirsai]').forEach(function (b) { b.onclick = function () { var m = r.membros[+b.getAttribute('data-dirsai')]; if (confirm('Marcar a saída de ' + m.nome + ' da Diretoria?')) salvarDir({ acao: 'sair', email: m.email }, 'Saída registrada.'); }; });
+        document.querySelectorAll('[data-dirvolta]').forEach(function (b) { b.onclick = function () { var m = r.membros[+b.getAttribute('data-dirvolta')]; salvarDir({ acao: 'voltar', email: m.email }, 'Pessoa de volta à Diretoria.'); }; });
+        $('dirn-ok').onclick = function () { salvarDir({ acao: 'incluir', email: $('dirn-em').value, nome: $('dirn-nome').value, cargo: $('dirn-cargo').value }, 'Pessoa incluída na Diretoria.'); };
+      }
       if (msg) aviso($('dir-msg'), msg[0], msg[1]);
       $('dir-sem').onchange = function () { telaDiretoria(this.value); };
       if ($('dir-ok')) $('dir-ok').onclick = function () {
