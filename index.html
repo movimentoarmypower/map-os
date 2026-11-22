@@ -250,8 +250,8 @@
       var semana = '<div class="duas secao"><div class="card"><h2>Tarefas da semana</h2>' + listaTarefas(r) + '</div>' +
         '<div class="card"><h2>Relatório semanal</h2>' + formRelatorio(r) + '</div></div><div id="tar-ger"></div>';
       var abas = area === 'rh-sam' ? [['ficha', 'Ficha da pessoa'], ['presenca', 'Presença e dias de trabalho'], ['solic', 'Solicitações, licenças e férias'], ['contr', 'Vagas e contratação'], ['onb', 'Onboarding e trilha'],
-        ['deslig', 'Desligamentos'], ['equipe', 'Equipe e demandas'], ['semana', 'Minha semana']] :
-        area === 'porta-jod' ? [['ficha', 'Ficha do membro'], ['jod', 'Entradas e grupos'], ['equipe', 'Equipe e demandas'], ['semana', 'Minha semana']] : [];
+        ['deslig', 'Desligamentos'], ['equipe', 'Equipe e demandas'], ['conversas', 'Conversas'], ['semana', 'Minha semana']] :
+        area === 'porta-jod' ? [['ficha', 'Ficha do membro'], ['jod', 'Entradas e grupos'], ['equipe', 'Equipe e demandas'], ['conversas', 'Conversas'], ['semana', 'Minha semana']] : [];
       if (abas.length) {
         S.areaAba = S.areaAba || {}; var atual = S.areaAba[area] || abas[0][0];
         h += '<div class="botoes" id="area-abas">' + abas.map(function (a) { return '<button class="btn pq ' + (a[0] === atual ? '' : 'claro') + '" data-arab="' + a[0] + '">' + a[1] + '</button>'; }).join('') + '</div>';
@@ -270,6 +270,8 @@
           S.areaAba[area] = k;
           document.querySelectorAll('[data-arab]').forEach(function (b) { b.classList.toggle('claro', b.getAttribute('data-arab') !== k); });
           document.querySelectorAll('.area-sec').forEach(function (x) { x.style.display = x.id === 'sec-' + k ? '' : 'none'; });
+          if (window.cvParar) cvParar();
+          if (k === 'conversas') return cvTela(area, 'sec-conversas');
           if (feitas[k]) return; feitas[k] = true;
           if (k === 'ficha') ficTela('sec-ficha');
           if (k === 'presenca') telaPresenca('sec-presenca');
