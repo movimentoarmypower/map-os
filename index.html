@@ -5490,6 +5490,57 @@
     .num{padding:12px 14px}.num b{font-size:22px}
   }
   @media(min-width:961px) and (max-width:1180px){.mv-atalhos{grid-template-columns:repeat(2,1fr)}}
+
+   
+  .mvrh{display:grid;grid-template-columns:250px 1fr;gap:22px;align-items:start}
+  .mvrh-nav{position:sticky;top:84px;background:#fff;border:1px solid var(--borda);border-radius:var(--mv-raio);box-shadow:var(--mv-sombra);padding:12px 10px;max-height:calc(100vh - 100px);overflow-y:auto}
+  .mvrh-nav .mvrh-g{font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--texto-suave);margin:12px 10px 4px}
+  .mvrh-nav button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;font:inherit;font-size:14px;color:var(--texto);padding:9px 10px;border-radius:12px;cursor:pointer;text-align:left}
+  .mvrh-nav button .mv-ic{width:18px;height:18px;color:var(--mv-roxo-3)}
+  .mvrh-nav button:hover{background:#f6edf8}
+  .mvrh-nav button.ativo{background:linear-gradient(135deg,var(--mv-roxo-3),var(--mv-magenta));color:#fff;font-weight:600}
+  .mvrh-nav button.ativo .mv-ic{color:#fff}
+  .mvrh-nav .mvrh-n{margin-left:auto;background:var(--mv-rosa);color:var(--mv-roxo-1);font-size:11px;font-weight:700;border-radius:10px;padding:1px 7px}
+  .mvrh-nav button.ativo .mvrh-n{background:#fff}
+  .mvrh-corpo{min-width:0}
+  .mvrh-corpo>.card:first-child,.mvrh-corpo>.secao:first-child{margin-top:0}
+  .mvrh-tit{display:flex;align-items:center;gap:12px;margin:0 0 16px}
+  .mvrh-tit h2{margin:0;font-size:21px}
+  .mvrh-tit p{margin:2px 0 0;color:var(--texto-suave);font-size:13.5px}
+  .mvrh-acoes{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:22px}
+  .mvrh-corpo .nums{display:grid;grid-template-columns:repeat(4,1fr)}
+  .mvrh-acoes .mv-atalho{font-size:13.5px;padding:16px 8px 14px}
+  .mvrh-acoes .mv-atalho .mv-ic{width:30px;height:30px}
+  .mvrh-dois{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+  .mvrh-box{background:#fff;border:1px solid var(--borda);border-radius:var(--mv-raio);box-shadow:var(--mv-sombra);padding:18px 18px 12px}
+  .mvrh-box h3{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:16.5px;color:var(--mv-roxo-1)}
+  .mvrh-box h3 .mv-ic{color:var(--mv-magenta);width:20px;height:20px}
+  .mvrh-box h3 .mvrh-ver{margin-left:auto}
+  .mvrh-linha{display:flex;align-items:center;gap:12px;padding:10px 4px;border-top:1px solid #f1e8f4;cursor:pointer;font-size:14px;border-radius:10px}
+  .mvrh-linha:first-of-type{border-top:0}
+  .mvrh-linha:hover{background:#faf5fc}
+  .mvrh-linha .mv-ico{width:34px;height:34px}
+  .mvrh-linha b{color:var(--mv-roxo-1)}
+  .mvrh-linha small{display:block;color:var(--texto-suave);font-size:12px}
+  .mvrh-linha .mv-seta-d{margin-left:auto;color:var(--texto-suave);width:18px;height:18px;transform:rotate(-90deg)}
+  .mvrh-barra{display:grid;grid-template-columns:130px 1fr 42px;gap:10px;align-items:center;font-size:13.5px;margin:9px 0}
+  .mvrh-barra i{display:block;height:9px;border-radius:9px;background:#f1e8f4;overflow:hidden}
+  .mvrh-barra i b{display:block;height:100%;border-radius:9px}
+  .mvrh-barra span:last-child{text-align:right;font-weight:600}
+  .mvrh-chips{display:none}
+  @media(max-width:1280px){.mvrh-acoes{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:1100px){.mvrh{grid-template-columns:210px 1fr}.mvrh-dois{grid-template-columns:1fr}}
+  @media(max-width:960px){
+    .mvrh{display:block}
+    .mvrh-nav{display:none}
+    .mvrh-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px 16px;padding:8px 14px;background:#fff;border-top:1px solid var(--borda);border-bottom:1px solid var(--borda)}
+    .mvrh-chips button{flex-shrink:0;white-space:nowrap;border:0;border-radius:20px;padding:8px 14px;font:inherit;font-size:13px;background:#f3e6f6;color:var(--mv-roxo-2);cursor:pointer}
+    .mvrh-chips button.ativo{background:linear-gradient(135deg,var(--mv-roxo-3),var(--mv-magenta));color:#fff;font-weight:600}
+    .mvrh-acoes{grid-template-columns:repeat(2,1fr);gap:10px}
+    .mvrh-corpo .nums{grid-template-columns:repeat(2,1fr)}
+    .mvrh-acoes .mv-atalho{font-size:13px}
+    .mvrh-barra{grid-template-columns:105px 1fr 34px}
+  }
 </style>
 
 <script>
@@ -5773,6 +5824,166 @@
       '<div class="mv-dados"><div><small>Matrícula</small>' + esc(p.mat || '—') + '</div><div><small>E-mail de acesso</small>' + esc(S.email) + '</div><div><small>Áreas em que atua</small>' + esc(minhas.join(', ') || '—') + '</div></div>' +
       '<div class="botoes" style="margin:18px 0 0"><button class="btn claro" data-mvgo="guia">Como usar o MAP OS</button><button class="btn claro" data-mvgo="pedidos:suporte">Pedir ajuda com o MAP OS</button><button class="btn" onclick="sair()">Sair do MAP OS</button></div></div>' +
       '<p class="vazio" style="margin-top:12px">Para corrigir nome, e-mail ou outros dados do cadastro, fale com o RH.</p>');
+  }
+
+   
+  var MVRH = { sec: 'inicio', ativo: false, d: null, area: null };
+  var MVRH_SECOES = [
+    ['', [['inicio', 'inicio', 'Início do RH']]],
+    ['Gestão de Pessoas', [['pessoas', 'perfil', 'Pessoas (ficha)'], ['equipe', 'pessoas', 'Equipes e demandas'], ['presenca', 'presenca', 'Presença e dias de trabalho']]],
+    ['Vagas e Seleção', [['vagas', 'maleta', 'Vagas'], ['cand', 'demandas', 'Candidaturas'], ['pedidos', 'enviar', 'Pedidos das equipes']]],
+    ['Processos', [['contr', 'escudo', 'Contratações e adendos'], ['onb', 'trilha', 'Onboarding e trilha'], ['solic', 'semana', 'Licenças, férias e pedidos'], ['deslig', 'sair', 'Desligamentos']]],
+    ['Acompanhamento', [['rel', 'grafico', 'Relatórios do RH'], ['conversas', 'conversa', 'Conversas'], ['semana', 'relogio', 'Minha semana']]]
+  ];
+  var MVRH_ABERTAS = ['Novo', 'Contato feito', 'Em andamento', 'Sala de espera'];
+  var MVRH_FIM_PED = ['Finalizado c/Sucesso', 'Cancelado'];
+  var MVRH_FIM_CONTR = ['Concluída', 'Cancelada'];
+  function mvrhNum() {
+    var d = MVRH.d; if (!d) return {};
+    return {
+      vagas: d.vagas.filter(function (v) { return v['Status'] === 'Aberta'; }).length,
+      cand: d.candidaturas.filter(function (x) { return MVRH_ABERTAS.indexOf(x.situacao) >= 0; }).length,
+      novas: d.candidaturas.filter(function (x) { return x.situacao === 'Novo'; }).length,
+      pedidos: d.pedidos.filter(function (p) { return MVRH_FIM_PED.indexOf(p.status) < 0; }).length,
+      pedNovos: d.pedidos.filter(function (p) { return !p.status || p.status === 'Não Iniciado'; }).length,
+      contr: d.contratacoes.filter(function (x) { return MVRH_FIM_CONTR.indexOf(x.c33) < 0; }).length
+    };
+  }
+  function mvrhSecoes() {
+    var l = MVRH_SECOES.slice();
+    if (MVRH.d && MVRH.d.mary) l = l.concat([['Configurações', [['protecao', 'escudo', 'Proteger planilhas']]]]);
+    return l;
+  }
+  function mvrhNav() {
+    var n = mvrhNum(), cont = { cand: n.cand, pedidos: n.pedidos, contr: n.contr };
+    var item = function (s) { return '<button type="button" data-mvrh="' + s[0] + '"' + (MVRH.sec === s[0] ? ' class="ativo"' : '') + '>' + mvIc(s[1]) + '<span>' + esc(s[2]) + '</span>' + (cont[s[0]] ? '<span class="mvrh-n">' + cont[s[0]] + '</span>' : '') + '</button>'; };
+    var nav = mvrhSecoes().map(function (g) { return (g[0] ? '<div class="mvrh-g">' + esc(g[0]) + '</div>' : '') + g[1].map(item).join(''); }).join('') +
+      '<div class="mvrh-g">Ajuda</div><button type="button" onclick="ir(\'guia:rh-sam\')">' + mvIc('ajuda') + '<span>Como usar esta área</span></button>';
+    var chips = mvrhSecoes().map(function (g) { return g[1].map(function (s) { return '<button type="button" data-mvrh="' + s[0] + '"' + (MVRH.sec === s[0] ? ' class="ativo"' : '') + '>' + esc(s[2]) + (cont[s[0]] ? ' (' + cont[s[0]] + ')' : '') + '</button>'; }).join(''); }).join('');
+    $('mvrh-nav').innerHTML = nav; $('mvrh-chips').innerHTML = chips;
+    document.querySelectorAll('[data-mvrh]').forEach(function (b) { b.onclick = function () { mvrhIr(b.getAttribute('data-mvrh')); }; });
+    var at = document.querySelector('#mvrh-chips .ativo'); if (at && at.scrollIntoView) try { at.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) {}
+  }
+  function mvrhTela() {
+    S.area = 'rh-sam'; MVRH.ativo = true;
+    $('conteudo').innerHTML = '<h1>RH e SAM</h1><p class="sub-tit">Gestão de Pessoas do MAP: vagas, candidaturas, contratação, integração e o ciclo do voluntariado.</p>' +
+      '<div class="mvrh"><nav class="mvrh-nav" id="mvrh-nav"></nav><div><div class="mvrh-chips" id="mvrh-chips"></div><div class="mvrh-corpo" id="mvrh-corpo"></div></div></div>';
+    mvrhNav();
+    chamar('rhDados', [S.email, S.token], function (r) {
+      if (r && r.ok && r.pode) { MVRH.d = r; RH.d = r; }
+      if (!$('mvrh-nav')) return;
+      mvrhNav();
+      if (MVRH.sec === 'inicio') mvrhInicio();
+    });
+    mvrhIr(MVRH.sec);
+  }
+  var mvTelaAreaBase = telaArea;
+  window.telaArea = function (area) {
+    if (area === 'rh-sam') return mvrhTela();
+    MVRH.ativo = false;
+    return mvTelaAreaBase(area);
+  };
+  var mvRhDesenharBase = rhDesenhar;
+  window.rhDesenhar = function () {
+    if (!MVRH.ativo || RH.alvo !== 'mvrh-corpo') return mvRhDesenharBase();
+    MVRH.d = RH.d;
+    $('mvrh-corpo').innerHTML = mvrhCab() + '<div id="rh-msg"></div><div class="card" id="rh-corpo"></div>';
+    ({ vagas: rhVagas, pedidos: rhPedidos, cand: rhCands, contr: rhContr, protecao: rhProtecao })[RH.aba]();
+    mvrhNav();
+  };
+  var MVRH_TIT = {
+    pessoas: ['Pessoas', 'Ficha completa de cada pessoa: situação, projetos, contratos e histórico.'],
+    equipe: ['Equipes e demandas', 'Quem está em cada equipe e as demandas combinadas.'],
+    presenca: ['Presença e dias de trabalho', 'Dias e horários combinados e o rastro de atividade de cada pessoa.'],
+    vagas: ['Vagas', 'Crie, edite e encerre as vagas que aparecem no Portal do RH.'],
+    cand: ['Candidaturas', 'Acompanhe quem se candidatou, agende entrevistas e aprove.'],
+    pedidos: ['Pedidos das equipes', 'Pedidos de recrutamento e de apoio feitos pelas coordenações.'],
+    contr: ['Contratações e adendos', 'Contratos, adendos e assinaturas.'],
+    onb: ['Onboarding e trilha', 'Entrevista, contrato, trilha e aviso à coordenação.'],
+    solic: ['Licenças, férias e pedidos', 'Pedidos de licença, férias, desligamento e atualização de dados.'],
+    deslig: ['Desligamentos', 'Desligamentos em andamento, prazos de transferência e conferência.'],
+    rel: ['Relatórios do RH', 'Pendências de benefícios por projeto e notas das trilhas.'],
+    conversas: ['Conversas', 'Conversas da equipe do RH e SAM.'],
+    semana: ['Minha semana', 'Suas tarefas da semana e o relatório semanal.'],
+    protecao: ['Proteger planilhas', 'Quem tem acesso às planilhas do RH.']
+  };
+  function mvrhCab() { var t = MVRH_TIT[MVRH.sec]; return t ? '<div class="mvrh-tit"><div><h2>' + esc(t[0]) + '</h2><p>' + esc(t[1]) + '</p></div></div>' : ''; }
+  function mvrhIr(k) {
+    MVRH.sec = k; if (window.cvParar) cvParar();
+    var el = $('mvrh-corpo'); if (!el) return;
+    mvrhNav();
+    var rhAbas = { vagas: 1, cand: 1, pedidos: 1, contr: 1, protecao: 1 };
+    if (k === 'inicio') return mvrhInicio();
+    if (rhAbas[k]) {
+      RH.aba = k; RH.filtro = k === 'vagas' ? 'abertas' : ''; RH.busca = '';
+      el.innerHTML = '<p class="carregando">Carregando...</p>';
+      return rhTela('mvrh-corpo');
+    }
+    el.innerHTML = mvrhCab() + '<div id="mvrh-sub"></div>';
+    if (k === 'pessoas') return ficTela('mvrh-sub');
+    if (k === 'equipe') { EQ.aba = ''; return eqdTela('rh-sam', 'mvrh-sub'); }
+    if (k === 'presenca') return telaPresenca('mvrh-sub');
+    if (k === 'onb') return onbTela('mvrh-sub');
+    if (k === 'solic') return telaSolicitacoes('mvrh-sub');
+    if (k === 'deslig') return desTela('mvrh-sub');
+    if (k === 'conversas') return cvTela('rh-sam', 'mvrh-sub');
+    if (k === 'semana' || k === 'rel') return mvrhArea(k);
+  }
+  function mvrhArea(k) {
+    var el = $('mvrh-sub'); el.innerHTML = '<p class="carregando">Carregando...</p>';
+    chamar('centralArea', [S.email, S.token, 'rh-sam'], function (r) {
+      if (!$('mvrh-sub') || MVRH.sec !== k) return;
+      if (!r.ok) { el.innerHTML = '<div class="msg erro">' + esc(r.erro) + '</div>'; return; }
+      MVRH.area = r;
+      if (k === 'rel') { el.innerHTML = r.rh ? blocoRh(r.rh) : '<p class="vazio">Sem dados de relatório para o seu perfil.</p>'; return; }
+      el.innerHTML = '<div class="duas secao" style="margin-top:0"><div class="card"><h2>Tarefas da semana</h2>' + listaTarefas(r) + '</div><div class="card"><h2>Relatório semanal</h2>' + formRelatorio(r) + '</div></div><div id="tar-ger"></div>';
+      ligarArea('rh-sam');
+      tarGerenciar('rh-sam', 'tar-ger', function () { mvrhIr('semana'); });
+    });
+  }
+  function mvrhInicio() {
+    var el = $('mvrh-corpo'); if (!el || MVRH.sec !== 'inicio') return;
+    var d = MVRH.d, n = mvrhNum(), nome = (S.dados.pessoa.curto || S.dados.pessoa.nome || '').split(' ')[0];
+    var acao = function (k, ic, cor, txt) { return '<button type="button" class="mv-atalho ' + cor + '" data-mvrhgo="' + k + '">' + mvIc(ic) + '<span>' + esc(txt) + '</span></button>'; };
+    var h = '<div class="mvrh-tit"><div><h2>Olá, ' + esc(nome) + '!</h2><p>O que você quer fazer hoje?</p></div></div>' +
+      '<div class="mvrh-acoes">' + acao('vagas:nova', 'maleta', 't-rosa', 'Criar vaga') + acao('cand', 'demandas', 't-lilas', 'Ver candidaturas') + acao('pessoas', 'perfil', 't-amarelo', 'Ficha da pessoa') +
+      acao('onb', 'trilha', 't-ciano', 'Integrar novo membro') + acao('contr', 'escudo', 't-menta', 'Contratação e adendo') + acao('rel', 'grafico', 't-laranja', 'Relatórios') + '</div>';
+    if (!d) {
+      h += '<div class="card"><p class="carregando">Carregando os números do RH...</p></div>';
+      el.innerHTML = h; mvrhLigarInicio(); return;
+    }
+    h += '<div class="nums">' + [[n.vagas, 'Vagas abertas'], [n.cand, 'Candidaturas em aberto'], [n.pedidos, 'Pedidos das equipes em aberto'], [n.contr, 'Contratações em andamento']]
+      .map(function (x) { return '<div class="num"><b>' + x[0] + '</b><span>' + x[1] + '</span></div>'; }).join('') + '</div>';
+    var pend = [];
+    if (n.novas) pend.push(['cand', 'demandas', 't-lilas', n.novas + ' candidatura(s) nova(s) para analisar', 'Situação "Novo"']);
+    if (n.pedNovos) pend.push(['pedidos', 'enviar', 't-menta', n.pedNovos + ' pedido(s) das equipes não iniciado(s)', 'Recrutamento e apoio']);
+    if (n.contr) pend.push(['contr', 'escudo', 't-rosa', n.contr + ' contratação(ões) em andamento', 'Contratos e adendos aguardando conclusão']);
+    var vagasPrazo = d.vagas.filter(function (v) { return v['Status'] === 'Aberta' && v['Prazo para se candidatar']; });
+    if (vagasPrazo.length) pend.push(['vagas', 'maleta', 't-amarelo', vagasPrazo.length + ' vaga(s) aberta(s) com prazo definido', 'Confira os prazos de candidatura']);
+    var sit = {}; d.candidaturas.forEach(function (x) { if (MVRH_ABERTAS.indexOf(x.situacao) >= 0) sit[x.situacao] = (sit[x.situacao] || 0) + 1; });
+    var cores = ['#8a3fb5', '#d6336c', '#d79a00', '#1b9aa8'], maxS = Math.max.apply(null, [1].concat(MVRH_ABERTAS.map(function (s) { return sit[s] || 0; })));
+    var porProj = {}; d.vagas.forEach(function (v) { if (v['Status'] === 'Aberta') { var p = v['Projeto / Frente'] || 'Sem projeto'; porProj[p] = (porProj[p] || 0) + 1; } });
+    var projs = Object.keys(porProj).sort(function (a, b) { return porProj[b] - porProj[a]; }).slice(0, 6), maxP = Math.max.apply(null, [1].concat(projs.map(function (p) { return porProj[p]; })));
+    h += '<div class="mvrh-dois"><div class="mvrh-box"><h3>' + mvIc('lista') + 'Minhas pendências</h3>' +
+      (pend.length ? pend.map(function (p) { return '<div class="mvrh-linha" data-mvrhgo="' + p[0] + '"><span class="mv-ico ' + p[2] + '">' + mvIc(p[1]) + '</span><span><b>' + esc(p[3]) + '</b><small>' + esc(p[4]) + '</small></span>' + mvIc('seta', 'mv-seta-d') + '</div>'; }).join('')
+        : '<p class="vazio">Nenhuma pendência agora.</p>') + '</div>' +
+      '<div class="mvrh-box"><h3>' + mvIc('grafico') + 'Candidaturas em aberto</h3>' +
+      MVRH_ABERTAS.map(function (s, i) { var v = sit[s] || 0; return '<div class="mvrh-barra"><span>' + esc(s) + '</span><i><b style="width:' + Math.round(v / maxS * 100) + '%;background:' + cores[i] + '"></b></i><span>' + v + '</span></div>'; }).join('') +
+      (projs.length ? '<h3 style="margin-top:16px">' + mvIc('maleta') + 'Vagas abertas por projeto</h3>' + projs.map(function (p, i) { return '<div class="mvrh-barra"><span>' + esc(p) + '</span><i><b style="width:' + Math.round(porProj[p] / maxP * 100) + '%;background:' + cores[i % 4] + '"></b></i><span>' + porProj[p] + '</span></div>'; }).join('') : '') +
+      '</div></div>';
+    var rec = d.candidaturas.slice().sort(function (a, b) { return mvrhData(b.data) - mvrhData(a.data); }).slice(0, 5);
+    h += '<div class="mvrh-box"><h3>' + mvIc('relogio') + 'Candidaturas recentes<button class="mv-ver mvrh-ver" type="button" data-mvrhgo="cand">Ver todas ' + mvIc('ir') + '</button></h3>' +
+      (rec.length ? rec.map(function (x) { return '<div class="mvrh-linha" data-mvrhgo="cand"><span class="mv-ico t-lilas">' + mvIc('perfil') + '</span><span><b>' + esc(x.nome) + '</b><small>' + esc(x.vaga) + ' · ' + esc(x.data) + '</small></span><span class="selo" style="margin-left:auto">' + esc(x.situacao) + '</span></div>'; }).join('')
+        : '<p class="vazio">Nenhuma candidatura registrada.</p>') + '</div>';
+    el.innerHTML = h; mvrhLigarInicio();
+  }
+  function mvrhData(s) { var m = String(s || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\D+(\d{1,2}):(\d{2}))?/); return m ? new Date(+m[3], m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime() : 0; }
+  function mvrhLigarInicio() {
+    document.querySelectorAll('[data-mvrhgo]').forEach(function (b) { b.onclick = function () {
+      var k = b.getAttribute('data-mvrhgo');
+      if (k === 'vagas:nova') { mvrhIr('vagas'); var t = setInterval(function () { if ($('rv-nova')) { clearInterval(t); $('rv-nova').click(); } }, 200); setTimeout(function () { clearInterval(t); }, 8000); return; }
+      mvrhIr(k);
+    }; });
   }
 </script>
 </body>
